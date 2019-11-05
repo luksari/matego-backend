@@ -3,7 +3,11 @@ import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject() private readonly authService: AuthService) {}
+  constructor() {}
+  @Get()
+  async getXD() {
+    return 'Auth';
+  }
   @Post('login')
   async login() {}
   @Post('register')
