@@ -28,3 +28,15 @@ services:
       - POSTGRES_DB=yerbapp
       - POSTGRES_USER=yerbapp
       - POSTGRES_PASSWORD=yerbanko
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+    ports:
+      - '${PGADMIN_PORT:-5555}:80'
+    depends_on:
+      - postgres
+    restart: always
