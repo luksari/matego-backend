@@ -13,6 +13,9 @@ export class UsersService {
   async getAll(): Promise<User[]> {
     return await this.usersRepository.find();
   }
+  async findById(id: number) {
+    return await this.usersRepository.findOne(id);
+  }
   async createUser(createUserDto: AuthRegisterDto) {
     const password = await this.hashPassword(createUserDto.password);
     const user = this.usersRepository.create({

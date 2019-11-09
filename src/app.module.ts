@@ -5,6 +5,8 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from './config/config.module';
 import { TypeOrmConfigService } from './config/typeorm.config.service';
+import { GraphQLModule } from '@nestjs/graphql';
+import { UsersResolver } from './users/users.resolver';
 @Module({
   imports: [
     AuthModule,
@@ -13,6 +15,12 @@ import { TypeOrmConfigService } from './config/typeorm.config.service';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useExisting: TypeOrmConfigService,
+    }),
+    GraphQLModule.forRoot({
+      context: ({ req }) => ({ req }),
+      playground: true,
+      autoSchemaFile: 'schema.gql',
+      include: [UsersModule],
     }),
   ],
   controllers: [AppController],
