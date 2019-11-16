@@ -4,11 +4,14 @@ import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash, verify } from 'argon2';
 import { AuthRegisterDto } from '../auth/auth.register.dto';
+import { Profile } from './profile.entity';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Profile)
+    private readonly profileRepository: Repository<Profile>,
   ) {}
   async getAll(): Promise<User[]> {
     return await this.usersRepository.find();

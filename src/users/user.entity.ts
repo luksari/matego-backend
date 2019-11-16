@@ -1,9 +1,21 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  OneToOne,
+  OneToMany,
+} from 'typeorm';
+import { Profile } from './profile.entity';
+import { Review } from 'src/reviews/review.entity';
 
 @Entity({ name: 'accounts' })
 export class User {
   @PrimaryGeneratedColumn({ name: 'account_id' })
   id: number;
+  @OneToOne(type => Profile)
+  @JoinColumn({ name: 'account_user_id' })
+  profile: Profile;
   @Column({ name: 'account_username', nullable: false })
   username: string;
   @Column({ name: 'account_password', nullable: false })
@@ -16,6 +28,8 @@ export class User {
   avatarUrl: string;
   @Column({ name: 'account_role', nullable: true })
   role: string;
+  @OneToMany(type => Review, review => review.author)
+  reviews: Review[];
   @Column('timestamp with time zone', {
     nullable: false,
     default: () => 'CURRENT_TIMESTAMP',

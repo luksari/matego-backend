@@ -5,7 +5,7 @@ export class AppController {
   constructor() {}
 
   @Get()
-  getcostam(): string {
+  getHello(): string {
     return 'Hello!';
   }
 }

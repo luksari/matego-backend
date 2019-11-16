@@ -3,8 +3,50 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AddReviewInput {
+  aroma: Float
+  taste: Float
+  bitterness: Float
+  energy: Float
+  price: Float
+  overall: Float
+  description: String!
+  authorId: ID!
+}
+
+type Manufacturer {
+  id: ID!
+  editedAt: String!
+  addedAt: String!
+}
+
+type Mutation {
+  addReview(review: AddReviewInput!): Review!
+}
+
+type Profile {
+  id: ID!
+  editedAt: String!
+  createdAt: String!
+}
+
 type Query {
   user(userId: Float!): UserInfo!
+  review(reviewId: Float!): Review!
+  reviews: [Review!]!
+}
+
+type Review {
+  id: ID!
+  aroma: Float!
+  taste: Float!
+  bitterness: Float!
+  energy: Float!
+  price: Float!
+  overall: Float!
+  description: String!
+  editedAt: String!
+  addedAt: String!
 }
 
 type UserInfo {
