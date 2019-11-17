@@ -1,0 +1,42 @@
+version: '3'
+services:
+  yerbapp:
+    # Uncomment the next line to use a non-root user. On Linux, this will prevent
+    # new files getting created as root, but you may need to update the USER_UID
+    # and USER_GID in .devcontainer/Dockerfile to match your user if not 1000.
+    # user: node
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3000:3000
+      - 9229:9229
+    volumes:
+      - ..:/workspace
+    links:
+      - postgres
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+  postgres:
+    image: postgres:11.5
+    restart: always
+    environment:
+      - POSTGRES_DB=yerbapp
+      - POSTGRES_USER=yerbapp
+      - POSTGRES_PASSWORD=yerbanko
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+    ports:
+      - '${PGADMIN_PORT:-5555}:80'
+    depends_on:
+      - postgres
+    restart: always
