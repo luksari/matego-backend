@@ -1,0 +1,41 @@
+version: '2.1'
+
+services:
+  yerbapp-api:
+    image: szoomy999/yerbapp-api:latest
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3000:3000
+      - 9229:9229
+    links:
+      - postgres
+  postgres:
+    image: postgres:11.5
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PWD}
+      - PGDATA=/data/postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/data/postgres
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_LOGIN}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PWD}
+    ports:
+      - '${PGADMIN_PORT}:80'
+    volumes:
+      - pgadmin:/root/.pgadmin
+    depends_on:
+      - postgres
+    restart: always
+    
+volumes:
+    postgres:
+    pgadmin:

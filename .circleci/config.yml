@@ -1,0 +1,55 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/node:lts # the primary container, where your job's commands are run
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      # run tests!
+      - run: yarn test
+  publish:
+    machine: true
+    steps:
+      - checkout
+      - run: docker build -t $DOCKERHUB_LOGIN/yerbapp-api:latest .
+      - run: docker login -u $DOCKERHUB_LOGIN -p $DOCKERHUB_PASSWORD
+      - run: docker push $DOCKERHUB_LOGIN/yerbapp-api:latest
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - add_ssh_keys: # add private SSH key from CircleCI account based on fingerprint.
+          fingerprints:
+            - '27:8d:83:e8:4e:62:ce:da:0c:88:6a:f9:d0:02:4b:5f'
+      - run: cat ~/.ssh/id_rsa
+      - run: chmod +x .scripts/deploy.sh
+      - run: ssh-keyscan $DROPLET_IP >> ~/.ssh/known_hosts
+      - run: .scripts/deploy.sh
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - test
+      - publish:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - publish
