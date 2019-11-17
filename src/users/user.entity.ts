@@ -1,16 +1,22 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ObjectType, Field, ID } from 'type-graphql';
 
 @Entity({ name: 'accounts' })
+@ObjectType()
 export class User {
   @PrimaryGeneratedColumn({ name: 'account_id' })
+  @Field(type => ID)
   id: number;
   @Column({ name: 'account_username', nullable: false })
+  @Field()
   username: string;
   @Column({ name: 'account_password', nullable: false })
   password: string;
   @Column({ name: 'account_mail', nullable: false })
+  @Field({ name: 'email' })
   mail: string;
   @Column({ name: 'account_country', nullable: false, default: 'Unknown' })
+  @Field()
   country: string;
   @Column({ name: 'account_avatar_url', nullable: true })
   avatarUrl: string;

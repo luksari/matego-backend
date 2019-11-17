@@ -10,6 +10,7 @@ import { AuthResponse } from './auth.response';
 import { AuthLoginDto } from './auth.login.dto';
 import { User } from '../users/user.entity';
 import { JwtPayload } from './jwt.payload';
+import { AuthRegisterResponse } from './auth.register.response';
 
 @Injectable()
 export class AuthService {
@@ -19,10 +20,15 @@ export class AuthService {
   ) {}
   async register(registerUserDto: AuthRegisterDto) {
     if (await this.userService.findByUsername(registerUserDto.username)) {
-      throw new BadRequestException('User already exists');
+      throw new BadRequestException('User with this name already exists');
     }
     const user = await this.userService.createUser(registerUserDto);
-    return await this.signUser(user);
+    const response: AuthRegisterResponse = {
+      id: user.id,
+      username: user.username,
+      email: user.mail,
+    };
+    return response;
   }
   async login(loginUserDto: AuthLoginDto) {
     const user = await this.userService.findByUsername(loginUserDto.username);
@@ -30,7 +36,6 @@ export class AuthService {
       throw new NotFoundException('User does not exist!');
     }
     if (!(await this.userService.verifyUser(user, loginUserDto.password))) {
-      console.log('zle haslo');
       throw new BadRequestException('Wrong password');
     }
     return await this.signUser(user);

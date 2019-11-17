@@ -4,11 +4,12 @@
 # -----------------------------------------------
 
 type Query {
-  user(userId: Float!): UserInfo!
+  user(userId: Float!): User!
 }
 
-type UserInfo {
+type User {
   id: ID!
   username: String!
   email: String!
+  country: String!
 }
