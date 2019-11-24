@@ -1,5 +1,4 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { UserInfo } from './user.info.model';
 import { UsersService } from './users.service';
 import { Ctx } from 'type-graphql';
 import { Context } from 'apollo-server-core';
@@ -8,7 +7,7 @@ import { GqlAuthGuard } from '../auth/gql.auth.guard';
 import { User } from './user.entity';
 import { EditUserInput } from './edit.user.input';
 
-@Resolver(UserInfo)
+@Resolver(User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
   @Query(returns => User)

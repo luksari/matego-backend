@@ -133,7 +133,7 @@ type Profile {
 }
 
 type Query {
-  user(userId: Float!): UserInfo!
+  user(userId: Float!): User!
   review(reviewId: Float!): Review!
   reviews: [Review!]!
   types: [ProductType!]!
@@ -188,11 +188,4 @@ type User {
   role: String
   reviews: [Review!]
   createdAt: String!
-}
-
-type User {
-  id: ID!
-  username: String!
-  email: String!
-  country: String!
 }
