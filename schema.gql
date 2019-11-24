@@ -190,8 +190,9 @@ type User {
   createdAt: String!
 }
 
-type UserInfo {
+type User {
   id: ID!
   username: String!
   email: String!
+  country: String!
 }

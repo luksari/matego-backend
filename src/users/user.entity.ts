@@ -55,7 +55,6 @@ export class User {
     name: 'account_edited_at',
   })
   editedAt: string;
-
   @Column('timestamp with time zone', {
     nullable: false,
     default: () => 'CURRENT_TIMESTAMP',

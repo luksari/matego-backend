@@ -30,12 +30,11 @@ export class UsersService {
     const password = await this.hashPassword(createUserDto.password);
     const profile = await this.profileRepository.create();
     await this.profileRepository.save(profile);
-    console.log(profile);
     const user = this.usersRepository.create({
       username: createUserDto.username,
       password,
-      mail: createUserDto.mail,
       profile,
+      mail: createUserDto.email,
     });
     return await this.usersRepository.save(user);
   }
