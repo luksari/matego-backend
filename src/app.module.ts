@@ -7,6 +7,11 @@ import { ConfigModule } from './config/config.module';
 import { TypeOrmConfigService } from './config/typeorm.config.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UsersResolver } from './users/users.resolver';
+import { ReviewsModule } from './reviews/reviews.module';
+import { TypesModule } from './types/types.module';
+import { ProductsModule } from './products/products.module';
+import { ManufacturersModule } from './manufacturers/manufacturers.module';
+import { RanksModule } from './ranks/ranks.module';
 @Module({
   imports: [
     AuthModule,
@@ -20,8 +25,21 @@ import { UsersResolver } from './users/users.resolver';
       context: ({ req }) => ({ req }),
       playground: true,
       autoSchemaFile: 'schema.gql',
-      include: [UsersModule],
+      include: [
+        UsersModule,
+        ProductsModule,
+        ReviewsModule,
+        ManufacturersModule,
+        TypesModule,
+        RanksModule,
+        TypesModule,
+      ],
     }),
+    ReviewsModule,
+    TypesModule,
+    ProductsModule,
+    ManufacturersModule,
+    RanksModule,
   ],
   controllers: [AppController],
   providers: [],

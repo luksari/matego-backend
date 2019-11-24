@@ -4,8 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UsersResolver } from './users.resolver';
+import { Profile } from './profile.entity';
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User, Profile])],
   providers: [UsersService, UsersResolver],
   exports: [UsersService],
 })

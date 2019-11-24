@@ -3,13 +3,190 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AddManufacturerInput {
+  name: String!
+  country: String!
+  photoUrl: String
+  creatorId: ID!
+}
+
+input AddProductInput {
+  manufacturerId: ID!
+  typeId: ID!
+  name: String!
+  details: String!
+  photoUrl: String
+}
+
+input AddRankInput {
+  name: String!
+  lowerRange: Float!
+  upperRange: Float!
+}
+
+input AddReviewInput {
+  aroma: Float
+  taste: Float
+  bitterness: Float
+  energy: Float
+  price: Float
+  overall: Float
+  description: String!
+  authorId: ID!
+  productId: ID!
+}
+
+input AddTypeInput {
+  name: String!
+}
+
+input EditManufacturerInput {
+  name: String
+  country: String
+  photoUrl: String
+}
+
+input EditProductInput {
+  name: String
+  details: String
+  photoUrl: String
+}
+
+input EditRankInput {
+  name: String
+  lowerRange: Float
+  upperRange: Float
+}
+
+input EditReviewInput {
+  aroma: Float
+  taste: Float
+  bitterness: Float
+  energy: Float
+  price: Float
+  overall: Float
+  description: String!
+}
+
+input EditTypeInput {
+  name: String!
+}
+
+input EditUserInput {
+  country: String
+  photoUrl: String
+  aromaImportance: Float
+  tasteImportance: Float
+  bitternessImportance: Float
+  priceImportance: Float
+  energyImportance: Float
+  overallImportance: Float
+}
+
+type Manufacturer {
+  id: ID!
+  name: String!
+  country: String!
+  photoUrl: String
+  products: [Product!]
+  editedAt: String!
+  addedAt: String!
+}
+
+type Mutation {
+  editUser(user: EditUserInput!, userId: Float!): User!
+  addReview(review: AddReviewInput!): Review!
+  editReview(review: EditReviewInput!, reviewId: Float!): Review!
+  deleteReview(reviewId: Float!): Boolean!
+  type(typeId: Float!): ProductType!
+  addType(type: AddTypeInput!): ProductType!
+  editType(type: EditTypeInput!, typeId: Float!): ProductType!
+  deleteType(typeId: Float!): Boolean!
+  addProduct(product: AddProductInput!): Product!
+  editProduct(product: EditProductInput!, productId: Float!): Product!
+  deleteProduct(productId: Float!): Boolean!
+  addManufacturer(manufacturer: AddManufacturerInput!): Manufacturer!
+  editManufacturer(manufacturer: EditManufacturerInput!, manufacturerId: Float!): Manufacturer!
+  deleteManufacturer(manufacturer: EditManufacturerInput!, manufacturerId: Float!): Boolean!
+  addRank(rank: AddRankInput!): Rank!
+  editRank(rank: EditRankInput!, rankId: Float!): Rank!
+  deleteRank(rankId: Float!): Boolean!
+}
+
+type Product {
+  id: ID!
+  manufacturer: Manufacturer!
+  type: ProductType!
+  reviews: [Review!]
+  name: String!
+  details: String!
+  photoUrl: String
+  addedAt: String!
+}
+
+type ProductType {
+  id: ID!
+  name: String!
+  addedAt: String!
+}
+
+type Profile {
+  id: ID!
+  aromaImportance: Float!
+  tasteImportance: Float!
+  bitternessImportance: Float!
+  priceImportance: Float!
+  energyImportance: Float!
+  overallImportance: Float!
+  editedAt: String!
+  createdAt: String!
+}
+
 type Query {
   user(userId: Float!): User!
+  users: [User!]!
+  review(reviewId: Float!): Review!
+  reviews: [Review!]!
+  types: [ProductType!]!
+  products: [Product!]!
+  product(productId: Float!): Product!
+  manufacturers: [Manufacturer!]!
+  manufacturer(manufacturerId: Float!): Manufacturer!
+  ranks: [Rank!]!
+  rank(rankId: Float!): Rank!
+}
+
+type Rank {
+  id: ID!
+  name: String!
+  lowerRange: Float!
+  upperRange: Float!
+  addedAt: String!
+}
+
+type Review {
+  id: ID!
+  aroma: Float!
+  taste: Float!
+  bitterness: Float!
+  energy: Float!
+  price: Float!
+  overall: Float!
+  description: String!
+  product: Product!
+  author: User!
+  editedAt: String!
+  addedAt: String!
 }
 
 type User {
   id: ID!
+  profile: Profile!
   username: String!
   email: String!
   country: String!
+  avatarUrl: String!
+  role: String
+  reviews: [Review!]
+  createdAt: String!
 }
