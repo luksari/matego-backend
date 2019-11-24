@@ -35,7 +35,8 @@ export class Manufacturer {
   photoUrl?: string;
 
   @OneToMany(type => Product, product => product.manufacturer)
-  products: Product[];
+  @Field(type => [Product], { nullable: true })
+  products?: Product[];
 
   @Column('timestamp with time zone', {
     nullable: false,

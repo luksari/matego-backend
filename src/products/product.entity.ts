@@ -11,8 +11,8 @@ import { Type } from '../types/type.entity';
 import { Manufacturer } from '../manufacturers/manufacturer.entity';
 import { Review } from '../reviews/review.entity';
 
-@Entity({ name: 'products' })
 @ObjectType()
+@Entity({ name: 'products' })
 export class Product {
   @PrimaryGeneratedColumn({ name: 'product_id' })
   @Field(type => ID)
@@ -20,14 +20,17 @@ export class Product {
 
   @ManyToOne(type => Manufacturer, manufacturer => manufacturer.products)
   @JoinColumn({ name: 'product_manufacturer_id' })
+  @Field(type => Manufacturer)
   manufacturer: Manufacturer;
 
   @ManyToOne(type => Type)
   @JoinColumn({ name: 'product_type_id' })
+  @Field(type => Type)
   type: Type;
 
   @OneToMany(type => Review, review => review.product)
-  reviews: Review[];
+  @Field(type => [Review], { nullable: true })
+  reviews?: Review[];
 
   @Column({ name: 'product_name', nullable: false })
   @Field()

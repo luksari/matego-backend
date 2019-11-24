@@ -13,5 +13,5 @@ export class AuthRegisterDto {
   @ApiModelProperty()
   @IsNotEmpty()
   @IsEmail()
-  readonly mail: string;
+  readonly email: string;
 }

@@ -21,6 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { AuthResponse } from './auth.response';
 import { json } from 'body-parser';
+import { AuthRegisterResponse } from './auth.register.response';
 
 @Controller('auth')
 export class AuthController {
@@ -43,7 +44,10 @@ export class AuthController {
     res.status(HttpStatus.OK).json(await this.authService.login(authLogin));
   }
   @Post('register')
-  @ApiOkResponse({ description: 'Successfully registered', type: AuthResponse })
+  @ApiOkResponse({
+    description: 'Successfully registered',
+    type: AuthRegisterResponse,
+  })
   @ApiBadRequestResponse({})
   async register(@Res() res: Response, @Body() authRegister: AuthRegisterDto) {
     return res

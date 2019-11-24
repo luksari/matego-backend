@@ -18,4 +18,6 @@ export class AddReviewInput {
   description: string;
   @Field(type => ID)
   authorId: number;
+  @Field(type => ID)
+  productId: number;
 }

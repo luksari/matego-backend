@@ -1,6 +1,8 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, PrimaryGeneratedColumn, Entity } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
 
+@Entity({ name: 'types' })
+@ObjectType('ProductType')
 export class Type {
   @PrimaryGeneratedColumn({ name: 'type_id' })
   @Field(type => ID)
