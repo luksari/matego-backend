@@ -1,10 +1,11 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { Review } from './review.entity';
 import { ReviewsService } from './reviews.service';
-import { Ctx, buildSchema } from 'type-graphql';
+import { Ctx, buildSchema, Int } from 'type-graphql';
 import { Context } from 'apollo-server-core';
 import { NotFoundException } from '@nestjs/common';
 import { AddReviewInput } from './add.review.input';
+import { UpdateReviewInput } from './update.review.input';
 
 @Resolver(Review)
 export class ReviewsResolver {
@@ -21,12 +22,25 @@ export class ReviewsResolver {
 
   @Query(returns => [Review])
   async reviews() {
-    return this.reviewService.getAll();
+    return await this.reviewService.getAll();
   }
 
   @Mutation(returns => Review)
   async addReview(@Args('review') review?: AddReviewInput) {
     return this.reviewService.createReview(review);
+  }
+
+  @Mutation(returns => Review)
+  async editReview(
+    @Args('reviewId') reviewId: number,
+    @Args('review') review?: UpdateReviewInput,
+  ) {
+    return await this.reviewService.updateReview(reviewId, review);
+  }
+
+  @Mutation(returns => Boolean)
+  async deleteReview(@Args('reviewId') reviewId: number, @Ctx() ctx: Context) {
+    return await this.reviewService.deleteReview(reviewId);
   }
 }
 

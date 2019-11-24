@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
-import { User } from 'src/users/user.entity';
+import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 
 @Entity({ name: 'reviews' })
@@ -47,10 +47,12 @@ export class Review {
 
   @ManyToOne(type => Product, product => product.reviews)
   @JoinColumn({ name: 'review_product_id' })
+  @Field(type => Product)
   product: Product;
 
   @ManyToOne(type => User, user => user.reviews)
   @JoinColumn({ name: 'review_author_id' })
+  @Field(type => User)
   author: User;
 
   @Column('timestamp with time zone', {

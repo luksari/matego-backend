@@ -2,8 +2,6 @@ import { InputType, Field, ID } from 'type-graphql';
 
 @InputType()
 export class UpdateReviewInput {
-  @Field(type => ID)
-  id: number;
   @Field({ nullable: true })
   aroma: number;
   @Field({ nullable: true })
