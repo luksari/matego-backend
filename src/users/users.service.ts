@@ -16,13 +16,13 @@ export class UsersService {
   ) {}
   async getAll(): Promise<User[]> {
     return await this.usersRepository.find({
-      relations: ['reviews', 'profile', 'profile.rank'],
+      relations: ['reviews', 'profile', 'profile.rank', 'reviews.product'],
     });
   }
 
   async findById(id: number) {
     return await this.usersRepository.findOne(id, {
-      relations: ['reviews', 'profile', 'profile.rank'],
+      relations: ['reviews', 'profile', 'profile.rank', 'reviews.product'],
     });
   }
 

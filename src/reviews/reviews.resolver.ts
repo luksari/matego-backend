@@ -5,7 +5,7 @@ import { Ctx, buildSchema, Int } from 'type-graphql';
 import { Context } from 'apollo-server-core';
 import { NotFoundException } from '@nestjs/common';
 import { AddReviewInput } from './add.review.input';
-import { UpdateReviewInput } from './update.review.input';
+import { EditReviewInput } from './update.review.input';
 
 @Resolver(Review)
 export class ReviewsResolver {
@@ -33,7 +33,7 @@ export class ReviewsResolver {
   @Mutation(returns => Review)
   async editReview(
     @Args('reviewId') reviewId: number,
-    @Args('review') review?: UpdateReviewInput,
+    @Args('review') review?: EditReviewInput,
   ) {
     return await this.reviewService.updateReview(reviewId, review);
   }

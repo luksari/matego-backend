@@ -54,7 +54,11 @@ export class ProductsService {
   async editProduct(id: number, editProduct: EditProductInput) {
     const product = await this.findById(id);
     Object.assign(product, editProduct);
-    await this.productsRepository.update(id, product);
+    await this.productsRepository.update(id, {
+      name: product.name,
+      details: product.details,
+      photoUrl: product.photoUrl,
+    });
     return product;
   }
   async deleteProduct(id: number) {

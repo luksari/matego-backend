@@ -19,6 +19,13 @@ export class UsersResolver {
     }
     return user;
   }
+
+  @Query(returns => [User])
+  @UseGuards(GqlAuthGuard)
+  async users() {
+    return await this.usersService.getAll();
+  }
+
   @Mutation(returns => User)
   async editUser(
     @Args('userId') userId: number,

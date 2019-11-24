@@ -58,6 +58,16 @@ input EditRankInput {
   upperRange: Float
 }
 
+input EditReviewInput {
+  aroma: Float
+  taste: Float
+  bitterness: Float
+  energy: Float
+  price: Float
+  overall: Float
+  description: String!
+}
+
 input EditTypeInput {
   name: String!
 }
@@ -86,7 +96,7 @@ type Manufacturer {
 type Mutation {
   editUser(user: EditUserInput!, userId: Float!): User!
   addReview(review: AddReviewInput!): Review!
-  editReview(review: UpdateReviewInput!, reviewId: Float!): Review!
+  editReview(review: EditReviewInput!, reviewId: Float!): Review!
   deleteReview(reviewId: Float!): Boolean!
   type(typeId: Float!): ProductType!
   addType(type: AddTypeInput!): ProductType!
@@ -134,6 +144,7 @@ type Profile {
 
 type Query {
   user(userId: Float!): User!
+  users: [User!]!
   review(reviewId: Float!): Review!
   reviews: [Review!]!
   types: [ProductType!]!
@@ -166,16 +177,6 @@ type Review {
   author: User!
   editedAt: String!
   addedAt: String!
-}
-
-input UpdateReviewInput {
-  aroma: Float
-  taste: Float
-  bitterness: Float
-  energy: Float
-  price: Float
-  overall: Float
-  description: String!
 }
 
 type User {
