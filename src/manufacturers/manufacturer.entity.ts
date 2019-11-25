@@ -18,7 +18,7 @@ export class Manufacturer {
   @Field(type => ID)
   id: number;
 
-  @OneToOne(type => User)
+  @ManyToOne(type => User)
   @JoinColumn({ name: 'manufacturer_added_by_account_id' })
   addedBy: User;
 

@@ -3,9 +3,13 @@ import { UsersService } from './users.service';
 import { Ctx } from 'type-graphql';
 import { Context } from 'apollo-server-core';
 import { UseGuards, NotFoundException } from '@nestjs/common';
-import { GqlAuthGuard } from '../auth/gql.auth.guard';
+import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { User } from './user.entity';
 import { EditUserInput } from './edit.user.input';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
+import { Roles } from '../decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Resolver(User)
 export class UsersResolver {
@@ -19,9 +23,15 @@ export class UsersResolver {
     }
     return user;
   }
+  @Query(returns => User)
+  @UseGuards(GqlAuthGuard)
+  async whoAmI(@CurrentUser() user: User) {
+    return await this.usersService.findById(user.id);
+  }
 
   @Query(returns => [User])
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, GqlRolesGuard)
+  @Roles('admin')
   async users() {
     return await this.usersService.getAll();
   }

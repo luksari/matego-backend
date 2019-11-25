@@ -107,7 +107,7 @@ type Mutation {
   deleteProduct(productId: Float!): Boolean!
   addManufacturer(manufacturer: AddManufacturerInput!): Manufacturer!
   editManufacturer(manufacturer: EditManufacturerInput!, manufacturerId: Float!): Manufacturer!
-  deleteManufacturer(manufacturer: EditManufacturerInput!, manufacturerId: Float!): Boolean!
+  deleteManufacturer(manufacturerId: Float!): Boolean!
   addRank(rank: AddRankInput!): Rank!
   editRank(rank: EditRankInput!, rankId: Float!): Rank!
   deleteRank(rankId: Float!): Boolean!
@@ -144,6 +144,7 @@ type Profile {
 
 type Query {
   user(userId: Float!): User!
+  whoAmI: User!
   users: [User!]!
   review(reviewId: Float!): Review!
   reviews: [Review!]!
