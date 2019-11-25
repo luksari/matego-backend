@@ -12,6 +12,8 @@ import { TypesModule } from './types/types.module';
 import { ProductsModule } from './products/products.module';
 import { ManufacturersModule } from './manufacturers/manufacturers.module';
 import { RanksModule } from './ranks/ranks.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './auth/guards/roles.guard';
 @Module({
   imports: [
     AuthModule,
