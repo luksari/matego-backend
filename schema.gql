@@ -95,6 +95,9 @@ type Manufacturer {
 
 type Mutation {
   editUser(user: EditUserInput!, userId: Float!): User!
+  assignAdmin(userId: Float!): User!
+  revokeAdmin(userId: Float!): User!
+  deleteUser(userId: Float!): Boolean!
   addReview(review: AddReviewInput!): Review!
   editReview(review: EditReviewInput!, reviewId: Float!): Review!
   deleteReview(reviewId: Float!): Boolean!
@@ -187,7 +190,7 @@ type User {
   email: String!
   country: String!
   avatarUrl: String!
-  role: String
+  role: String!
   reviews: [Review!]
   createdAt: String!
 }

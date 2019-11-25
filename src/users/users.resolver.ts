@@ -9,7 +9,7 @@ import { EditUserInput } from './edit.user.input';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { UserRoles } from '../auth/guards/roles/user.roles';
 
 @Resolver(User)
 export class UsersResolver {
@@ -37,10 +37,32 @@ export class UsersResolver {
   }
 
   @Mutation(returns => User)
+  @UseGuards(GqlAuthGuard)
   async editUser(
     @Args('userId') userId: number,
     @Args('user') user: EditUserInput,
   ) {
     return await this.usersService.editUser(userId, user);
+  }
+
+  @Mutation(returns => User)
+  @UseGuards(GqlAuthGuard, GqlRolesGuard)
+  @Roles(UserRoles.admin)
+  async assignAdmin(@Args('userId') userId: number) {
+    return await this.usersService.assignAdmin(userId);
+  }
+
+  @Mutation(returns => User)
+  @UseGuards(GqlAuthGuard, GqlRolesGuard)
+  @Roles(UserRoles.admin)
+  async revokeAdmin(@Args('userId') userId: number) {
+    return await this.usersService.revokeAdmin(userId);
+  }
+
+  @Mutation(returns => Boolean)
+  @UseGuards(GqlAuthGuard, GqlRolesGuard)
+  @Roles(UserRoles.admin)
+  async deleteUser(@Args('userId') userId: number) {
+    return await this.usersService.deleteUser(userId);
   }
 }
