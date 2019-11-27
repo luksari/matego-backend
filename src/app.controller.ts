@@ -9,8 +9,6 @@ export class AppController {
   constructor() {}
 
   @Get()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('user')
   getHello(): string {
     return 'Hello World!';
   }
