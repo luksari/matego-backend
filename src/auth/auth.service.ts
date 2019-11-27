@@ -9,7 +9,7 @@ import { AuthRegisterDto } from './auth.register.dto';
 import { AuthResponse } from './auth.response';
 import { AuthLoginDto } from './auth.login.dto';
 import { User } from '../users/user.entity';
-import { JwtPayload } from './jwt.payload';
+import { JwtPayload } from './strategies/jwt.payload';
 import { AuthRegisterResponse } from './auth.register.response';
 
 @Injectable()

@@ -95,6 +95,9 @@ type Manufacturer {
 
 type Mutation {
   editUser(user: EditUserInput!, userId: Float!): User!
+  assignAdmin(userId: Float!): User!
+  revokeAdmin(userId: Float!): User!
+  deleteUser(userId: Float!): Boolean!
   addReview(review: AddReviewInput!): Review!
   editReview(review: EditReviewInput!, reviewId: Float!): Review!
   deleteReview(reviewId: Float!): Boolean!
@@ -107,7 +110,7 @@ type Mutation {
   deleteProduct(productId: Float!): Boolean!
   addManufacturer(manufacturer: AddManufacturerInput!): Manufacturer!
   editManufacturer(manufacturer: EditManufacturerInput!, manufacturerId: Float!): Manufacturer!
-  deleteManufacturer(manufacturer: EditManufacturerInput!, manufacturerId: Float!): Boolean!
+  deleteManufacturer(manufacturerId: Float!): Boolean!
   addRank(rank: AddRankInput!): Rank!
   editRank(rank: EditRankInput!, rankId: Float!): Rank!
   deleteRank(rankId: Float!): Boolean!
@@ -144,6 +147,7 @@ type Profile {
 
 type Query {
   user(userId: Float!): User!
+  whoAmI: User!
   users: [User!]!
   review(reviewId: Float!): Review!
   reviews: [Review!]!
@@ -186,7 +190,7 @@ type User {
   email: String!
   country: String!
   avatarUrl: String!
-  role: String
+  role: String!
   reviews: [Review!]
   createdAt: String!
 }

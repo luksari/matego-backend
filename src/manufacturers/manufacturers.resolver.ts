@@ -1,9 +1,13 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { Manufacturer } from './manufacturer.entity';
 import { ManufacturersService } from './manufacturers.service';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, UseGuards } from '@nestjs/common';
 import { AddManufacturerInput } from './add.manufacturer.input';
 import { EditManufacturerInput } from './edit.manufacturer.input';
+import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
+import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
+import { Roles } from '../decorators/roles.decorator';
+import { UserRoles } from '../auth/guards/roles/user.roles';
 
 @Resolver(Manufacturer)
 export class ManufacturersResolver {
@@ -23,12 +27,16 @@ export class ManufacturersResolver {
     return manufacturer;
   }
   @Mutation(returns => Manufacturer)
+  @UseGuards(GqlAuthGuard, GqlRolesGuard)
+  @Roles(UserRoles.admin, UserRoles.user)
   async addManufacturer(
     @Args('manufacturer') manufacturer: AddManufacturerInput,
   ) {
     return await this.manufacturersService.createManufacturer(manufacturer);
   }
   @Mutation(returns => Manufacturer)
+  @UseGuards(GqlAuthGuard, GqlRolesGuard)
+  @Roles(UserRoles.admin)
   async editManufacturer(
     @Args('manufacturerId') manufacturerId: number,
     @Args('manufacturer') manufacturer: EditManufacturerInput,
@@ -39,10 +47,9 @@ export class ManufacturersResolver {
     );
   }
   @Mutation(returns => Boolean)
-  async deleteManufacturer(
-    @Args('manufacturerId') manufacturerId: number,
-    @Args('manufacturer') manufacturer: EditManufacturerInput,
-  ) {
+  @UseGuards(GqlAuthGuard, GqlRolesGuard)
+  @Roles(UserRoles.admin)
+  async deleteManufacturer(@Args('manufacturerId') manufacturerId: number) {
     return await this.manufacturersService.deleteManufacturer(manufacturerId);
   }
 }
