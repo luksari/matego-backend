@@ -10,6 +10,7 @@ import { AddProductInput } from './add.product.input';
 import { EditProductInput } from './edit.product.input';
 import { Manufacturer } from '../manufacturers/manufacturer.entity';
 import { Type } from '../types/type.entity';
+import { ErrorMessages } from '../common/error.messages';
 
 @Injectable()
 export class ProductsService {
@@ -36,11 +37,11 @@ export class ProductsService {
       addProduct.manufacturerId,
     );
     if (!manufacturer) {
-      throw new NotFoundException('Manufacturer not found');
+      throw new NotFoundException(ErrorMessages.ManufacturerNotFound);
     }
     const type = await this.typesRepository.findOne(addProduct.typeId);
     if (!type) {
-      throw new NotFoundException('Type not found');
+      throw new NotFoundException(ErrorMessages.TypeNotFound);
     }
     const product = await this.productsRepository.create({
       details: addProduct.details,

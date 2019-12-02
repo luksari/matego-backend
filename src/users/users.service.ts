@@ -7,6 +7,7 @@ import { AuthRegisterDto } from '../auth/auth.register.dto';
 import { Profile } from './profile.entity';
 import { EditUserInput } from './edit.user.input';
 import { UserRoles } from '../auth/guards/roles/user.roles';
+import { ErrorMessages } from '../common/error.messages';
 @Injectable()
 export class UsersService {
   constructor(
@@ -78,7 +79,7 @@ export class UsersService {
   async assignAdmin(userId: number) {
     const user = await this.findById(userId);
     if (!user) {
-      throw new NotFoundException(`User with id: ${userId} does not exist!`);
+      throw new NotFoundException(ErrorMessages.UserExists);
     }
     user.role = UserRoles.admin;
     await this.usersRepository.update(userId, {
@@ -91,7 +92,7 @@ export class UsersService {
   async revokeAdmin(userId: number) {
     const user = await this.findById(userId);
     if (!user) {
-      throw new NotFoundException(`User with id: ${userId} does not exist!`);
+      throw new NotFoundException(ErrorMessages.UserNotFound);
     }
 
     user.role = UserRoles.user;

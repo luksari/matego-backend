@@ -10,6 +10,7 @@ import { AddReviewInput } from './add.review.input';
 import { EditReviewInput } from './update.review.input';
 import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
+import { ErrorMessages } from '../common/error.messages';
 
 @Injectable()
 export class ReviewsService {
@@ -41,17 +42,13 @@ export class ReviewsService {
   async createReview(addReviewInput: AddReviewInput) {
     const user = await this.usersRepository.findOne(addReviewInput.authorId);
     if (!user) {
-      throw new NotFoundException(
-        `User with id: ${addReviewInput.authorId} not found.`,
-      );
+      throw new NotFoundException(ErrorMessages.UserNotFound);
     }
     const product = await this.productsRepository.findOne(
       addReviewInput.productId,
     );
     if (!product) {
-      throw new NotFoundException(
-        `Product with id: ${addReviewInput.productId} not found.`,
-      );
+      throw new NotFoundException(ErrorMessages.ProductNotFound);
     }
     const review = this.reviewsRepository.create({
       aroma: addReviewInput.aroma,

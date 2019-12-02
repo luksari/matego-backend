@@ -11,6 +11,7 @@ import { AuthLoginDto } from './auth.login.dto';
 import { User } from '../users/user.entity';
 import { JwtPayload } from './strategies/jwt.payload';
 import { AuthRegisterResponse } from './auth.register.response';
+import { ErrorMessages } from '../common/error.messages';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,7 @@ export class AuthService {
   ) {}
   async register(registerUserDto: AuthRegisterDto) {
     if (await this.userService.findByUsername(registerUserDto.username)) {
-      throw new BadRequestException('User with this name already exists');
+      throw new BadRequestException(ErrorMessages.UserExists);
     }
     const user = await this.userService.createUser(registerUserDto);
     const response: AuthRegisterResponse = {
@@ -33,10 +34,10 @@ export class AuthService {
   async login(loginUserDto: AuthLoginDto) {
     const user = await this.userService.findByUsername(loginUserDto.username);
     if (!user) {
-      throw new NotFoundException('User does not exist!');
+      throw new NotFoundException(ErrorMessages.UserNotFound);
     }
     if (!(await this.userService.verifyUser(user, loginUserDto.password))) {
-      throw new BadRequestException('Wrong password');
+      throw new BadRequestException(ErrorMessages.WrongPassword);
     }
     return await this.signUser(user);
   }
