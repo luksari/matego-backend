@@ -6,7 +6,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { ObjectType, Field, ID } from 'type-graphql';
+import { ObjectType, Field, ID, Int } from 'type-graphql';
 import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 
@@ -18,27 +18,27 @@ export class Review {
   id: number;
 
   @Column({ name: 'review_aroma', nullable: false, default: 5 })
-  @Field()
+  @Field(type => Int)
   aroma: number;
 
   @Column({ name: 'review_taste', nullable: false, default: 5 })
-  @Field()
+  @Field(type => Int)
   taste: number;
 
   @Column({ name: 'review_bitterness', nullable: false, default: 5 })
-  @Field()
+  @Field(type => Int)
   bitterness: number;
 
   @Column({ name: 'review_energy', nullable: false, default: 5 })
-  @Field()
+  @Field(type => Int)
   energy: number;
 
   @Column({ name: 'review_price', nullable: false, default: 5 })
-  @Field()
+  @Field(type => Int)
   price: number;
 
   @Column({ name: 'review_overall', nullable: false, default: 5 })
-  @Field()
+  @Field(type => Int)
   overall: number;
 
   @Column({ name: 'review_description', nullable: false, default: '' })

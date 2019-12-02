@@ -1,6 +1,6 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { Ctx } from 'type-graphql';
+import { Ctx, ID } from 'type-graphql';
 import { Context } from 'apollo-server-core';
 import { UseGuards, NotFoundException } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
@@ -10,16 +10,20 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
+import { ErrorMessages } from '../common/error.messages';
 
 @Resolver(User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
   @Query(returns => User)
   @UseGuards(GqlAuthGuard)
-  async user(@Args('userId') userId: number, @Ctx() ctx: Context) {
+  async user(
+    @Args({ name: 'userId', type: () => ID }) userId: number,
+    @Ctx() ctx: Context,
+  ) {
     const user = await this.usersService.findById(userId);
     if (!user) {
-      throw new NotFoundException('User not found!');
+      throw new NotFoundException(ErrorMessages.UserNotFound);
     }
     return user;
   }
@@ -31,7 +35,7 @@ export class UsersResolver {
 
   @Query(returns => [User])
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
-  @Roles('admin')
+  @Roles(UserRoles.admin)
   async users() {
     return await this.usersService.getAll();
   }
@@ -39,7 +43,7 @@ export class UsersResolver {
   @Mutation(returns => User)
   @UseGuards(GqlAuthGuard)
   async editUser(
-    @Args('userId') userId: number,
+    @Args({ name: 'userId', type: () => ID }) userId: number,
     @Args('user') user: EditUserInput,
   ) {
     return await this.usersService.editUser(userId, user);
@@ -48,21 +52,21 @@ export class UsersResolver {
   @Mutation(returns => User)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
-  async assignAdmin(@Args('userId') userId: number) {
+  async assignAdmin(@Args({ name: 'userId', type: () => ID }) userId: number) {
     return await this.usersService.assignAdmin(userId);
   }
 
   @Mutation(returns => User)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
-  async revokeAdmin(@Args('userId') userId: number) {
+  async revokeAdmin(@Args({ name: 'userId', type: () => ID }) userId: number) {
     return await this.usersService.revokeAdmin(userId);
   }
 
   @Mutation(returns => Boolean)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
-  async deleteUser(@Args('userId') userId: number) {
+  async deleteUser(@Args({ name: 'userId', type: () => ID }) userId: number) {
     return await this.usersService.deleteUser(userId);
   }
 }

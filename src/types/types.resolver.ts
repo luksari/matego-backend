@@ -8,6 +8,7 @@ import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
+import { ID } from 'type-graphql';
 
 @Resolver(Type)
 export class TypesResolver {
@@ -18,8 +19,8 @@ export class TypesResolver {
     return await this.typesService.getAll();
   }
 
-  @Mutation(returns => Type)
-  async type(@Args('typeId') typeId: number) {
+  @Query(returns => Type)
+  async type(@Args({ name: 'typeId', type: () => ID }) typeId: number) {
     return await this.typesService.findById(typeId);
   }
 
@@ -34,7 +35,7 @@ export class TypesResolver {
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
   async editType(
-    @Args('typeId') typeId: number,
+    @Args({ name: 'typeId', type: () => ID }) typeId: number,
     @Args('type') type: EditTypeInput,
   ) {
     return await this.typesService.editType(typeId, type);
@@ -43,7 +44,7 @@ export class TypesResolver {
   @Mutation(returns => Boolean)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
-  async deleteType(@Args('typeId') typeId: number) {
+  async deleteType(@Args({ name: 'typeId', type: () => ID }) typeId: number) {
     return await this.typesService.deleteType(typeId);
   }
 }

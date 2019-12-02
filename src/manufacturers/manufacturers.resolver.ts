@@ -8,6 +8,8 @@ import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
+import { ID, Arg } from 'type-graphql';
+import { ErrorMessages } from '../common/error.messages';
 
 @Resolver(Manufacturer)
 export class ManufacturersResolver {
@@ -16,13 +18,16 @@ export class ManufacturersResolver {
   async manufacturers() {
     return await this.manufacturersService.getAll();
   }
+
   @Query(returns => Manufacturer)
-  async manufacturer(@Args('manufacturerId') manufactuerId: number) {
+  async manufacturer(
+    @Args({ name: 'manufacturerId', type: () => ID }) manufactuerId: number,
+  ) {
     const manufacturer = await this.manufacturersService.findById(
       manufactuerId,
     );
     if (!manufacturer) {
-      throw new NotFoundException('Manufacturer not found');
+      throw new NotFoundException(ErrorMessages.ManufacturerNotFound);
     }
     return manufacturer;
   }
@@ -38,7 +43,7 @@ export class ManufacturersResolver {
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
   async editManufacturer(
-    @Args('manufacturerId') manufacturerId: number,
+    @Args({ name: 'manufacturerId', type: () => ID }) manufacturerId: number,
     @Args('manufacturer') manufacturer: EditManufacturerInput,
   ) {
     return await this.manufacturersService.updateManufacturer(
@@ -49,7 +54,9 @@ export class ManufacturersResolver {
   @Mutation(returns => Boolean)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
-  async deleteManufacturer(@Args('manufacturerId') manufacturerId: number) {
+  async deleteManufacturer(
+    @Args({ name: 'manufacturerId', type: () => ID }) manufacturerId: number,
+  ) {
     return await this.manufacturersService.deleteManufacturer(manufacturerId);
   }
 }

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { ObjectType, Field, ID } from 'type-graphql';
+import { ObjectType, Field, ID, Int } from 'type-graphql';
 
 @Entity({ name: 'ranks' })
 @ObjectType()
@@ -13,11 +13,11 @@ export class Rank {
   name: string;
 
   @Column({ name: 'rank_lower_range', nullable: false })
-  @Field()
+  @Field(type => Int)
   lowerRange: number;
 
   @Column({ name: 'rank_upper_range', nullable: false })
-  @Field()
+  @Field(type => Int)
   upperRange: number;
 
   @Column('timestamp with time zone', {

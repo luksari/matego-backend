@@ -21,7 +21,9 @@ export class ProductsResolver {
   }
 
   @Query(returns => Product)
-  async product(@Args('productId') productId: number) {
+  async product(
+    @Args({ name: 'productId', type: () => ID }) productId: number,
+  ) {
     return await this.productsService.findById(productId);
   }
 
@@ -36,7 +38,7 @@ export class ProductsResolver {
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
   async editProduct(
-    @Args('productId') productId: number,
+    @Args({ name: 'productId', type: () => ID }) productId: number,
     @Args('product') product: EditProductInput,
   ) {
     return await this.productsService.editProduct(productId, product);
@@ -45,7 +47,9 @@ export class ProductsResolver {
   @Mutation(returns => Boolean)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
-  async deleteProduct(@Args('productId') productId: number) {
+  async deleteProduct(
+    @Args({ name: 'productId', type: () => ID }) productId: number,
+  ) {
     return await this.productsService.deleteProduct(productId);
   }
 }
