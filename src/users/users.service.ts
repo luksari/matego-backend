@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { Repository, Equal } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +6,8 @@ import { hash, verify } from 'argon2';
 import { AuthRegisterDto } from '../auth/auth.register.dto';
 import { Profile } from './profile.entity';
 import { EditUserInput } from './edit.user.input';
+import { UserRoles } from '../auth/guards/roles/user.roles';
+import { ErrorMessages } from '../common/error.messages';
 @Injectable()
 export class UsersService {
   constructor(
@@ -62,6 +64,42 @@ export class UsersService {
     user.avatarUrl = editUserInput.photoUrl;
     user.country = editUserInput.country;
     await this.usersRepository.update(userId, user);
+    return user;
+  }
+
+  async deleteUser(userId: number) {
+    try {
+      await this.usersRepository.delete(userId);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async assignAdmin(userId: number) {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new NotFoundException(ErrorMessages.UserExists);
+    }
+    user.role = UserRoles.admin;
+    await this.usersRepository.update(userId, {
+      role: UserRoles.admin,
+    });
+
+    return user;
+  }
+
+  async revokeAdmin(userId: number) {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new NotFoundException(ErrorMessages.UserNotFound);
+    }
+
+    user.role = UserRoles.user;
+    await this.usersRepository.update(userId, {
+      role: UserRoles.user,
+    });
+
     return user;
   }
 }

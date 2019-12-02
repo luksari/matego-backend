@@ -1,4 +1,4 @@
-import { InputType, Field } from 'type-graphql';
+import { InputType, Field, Int } from 'type-graphql';
 
 @InputType()
 export class EditUserInput {
@@ -8,21 +8,21 @@ export class EditUserInput {
   @Field({ nullable: true })
   photoUrl?: string;
 
-  @Field({ nullable: true })
+  @Field(type => Int, { nullable: true })
   aromaImportance?: number;
 
-  @Field({ nullable: true })
+  @Field(type => Int, { nullable: true })
   tasteImportance?: number;
 
-  @Field({ nullable: true })
+  @Field(type => Int, { nullable: true })
   bitternessImportance?: number;
 
-  @Field({ nullable: true })
+  @Field(type => Int, { nullable: true })
   priceImportance?: number;
 
-  @Field({ nullable: true })
+  @Field(type => Int, { nullable: true })
   energyImportance?: number;
 
-  @Field({ nullable: true })
+  @Field(type => Int, { nullable: true })
   overallImportance?: number;
 }

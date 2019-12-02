@@ -5,6 +5,7 @@ import { Repository, DeleteResult } from 'typeorm';
 import { AddManufacturerInput } from './add.manufacturer.input';
 import { User } from '../users/user.entity';
 import { EditManufacturerInput } from './edit.manufacturer.input';
+import { ErrorMessages } from '../common/error.messages';
 
 @Injectable()
 export class ManufacturersService {
@@ -35,9 +36,7 @@ export class ManufacturersService {
       addManufacturerInput.creatorId,
     );
     if (!user) {
-      throw new NotFoundException(
-        `User with id: ${addManufacturerInput.creatorId} not found.`,
-      );
+      throw new NotFoundException(ErrorMessages.UserNotFound);
     }
     const manufactuer = this.manufacturersRepository.create({
       name: addManufacturerInput.name,

@@ -9,6 +9,7 @@ import {
 import { Profile } from './profile.entity';
 import { Review } from '../reviews/review.entity';
 import { ObjectType, Field, ID } from 'type-graphql';
+import { UserRoles } from '../auth/guards/roles/user.roles';
 
 @Entity({ name: 'accounts' })
 @ObjectType()
@@ -17,7 +18,7 @@ export class User {
   @Field(type => ID)
   id: number;
 
-  @OneToOne(type => Profile)
+  @OneToOne(type => Profile, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'account_user_id' })
   @Field(type => Profile)
   profile: Profile;
@@ -41,8 +42,8 @@ export class User {
   @Field()
   avatarUrl: string;
 
-  @Column({ name: 'account_role', nullable: true })
-  @Field({ nullable: true })
+  @Column({ name: 'account_role', nullable: false, default: UserRoles.user })
+  @Field({ nullable: false })
   role: string;
 
   @OneToMany(type => Review, review => review.author)

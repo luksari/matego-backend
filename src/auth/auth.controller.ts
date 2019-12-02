@@ -20,7 +20,6 @@ import {
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { AuthResponse } from './auth.response';
-import { json } from 'body-parser';
 import { AuthRegisterResponse } from './auth.register.response';
 
 @Controller('auth')
@@ -36,6 +35,7 @@ export class AuthController {
       message: 'JWT works!',
     };
   }
+
   @Post('login')
   @ApiOkResponse({ description: 'Successfully logged in', type: AuthResponse })
   @ApiBadRequestResponse({})
@@ -43,6 +43,7 @@ export class AuthController {
   async login(@Res() res: Response, @Body() authLogin: AuthLoginDto) {
     res.status(HttpStatus.OK).json(await this.authService.login(authLogin));
   }
+
   @Post('register')
   @ApiOkResponse({
     description: 'Successfully registered',

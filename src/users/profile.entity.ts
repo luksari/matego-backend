@@ -5,7 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { ObjectType, Field, ID } from 'type-graphql';
+import { ObjectType, Field, ID, Int } from 'type-graphql';
 import { Rank } from '../ranks/rank.entity';
 
 @Entity({ name: 'users' })
@@ -20,27 +20,27 @@ export class Profile {
   rank: Rank;
 
   @Column({ name: 'user_aroma_importance', nullable: false, default: 3 })
-  @Field()
+  @Field(type => Int)
   aromaImportance: number;
 
   @Column({ name: 'user_taste_importance', nullable: false, default: 3 })
-  @Field()
+  @Field(type => Int)
   tasteImportance: number;
 
   @Column({ name: 'user_bitterness_importance', nullable: false, default: 3 })
-  @Field()
+  @Field(type => Int)
   bitternessImportance: number;
 
   @Column({ name: 'user_price_importance', nullable: false, default: 3 })
-  @Field()
+  @Field(type => Int)
   priceImportance: number;
 
   @Column({ name: 'user_energy_importance', nullable: false, default: 3 })
-  @Field()
+  @Field(type => Int)
   energyImportance: number;
 
   @Column({ name: 'user_overall_importance', nullable: false, default: 3 })
-  @Field()
+  @Field(type => Int)
   overallImportance: number;
 
   @Column('timestamp with time zone', {

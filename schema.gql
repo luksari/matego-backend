@@ -20,17 +20,17 @@ input AddProductInput {
 
 input AddRankInput {
   name: String!
-  lowerRange: Float!
-  upperRange: Float!
+  lowerRange: Int!
+  upperRange: Int!
 }
 
 input AddReviewInput {
-  aroma: Float
-  taste: Float
-  bitterness: Float
-  energy: Float
-  price: Float
-  overall: Float
+  aroma: Int
+  taste: Int
+  bitterness: Int
+  energy: Int
+  price: Int
+  overall: Int
   description: String!
   authorId: ID!
   productId: ID!
@@ -54,17 +54,17 @@ input EditProductInput {
 
 input EditRankInput {
   name: String
-  lowerRange: Float
-  upperRange: Float
+  lowerRange: Int
+  upperRange: Int
 }
 
 input EditReviewInput {
-  aroma: Float
-  taste: Float
-  bitterness: Float
-  energy: Float
-  price: Float
-  overall: Float
+  aroma: Int
+  taste: Int
+  bitterness: Int
+  energy: Int
+  price: Int
+  overall: Int
   description: String!
 }
 
@@ -75,12 +75,12 @@ input EditTypeInput {
 input EditUserInput {
   country: String
   photoUrl: String
-  aromaImportance: Float
-  tasteImportance: Float
-  bitternessImportance: Float
-  priceImportance: Float
-  energyImportance: Float
-  overallImportance: Float
+  aromaImportance: Int
+  tasteImportance: Int
+  bitternessImportance: Int
+  priceImportance: Int
+  energyImportance: Int
+  overallImportance: Int
 }
 
 type Manufacturer {
@@ -94,23 +94,25 @@ type Manufacturer {
 }
 
 type Mutation {
-  editUser(user: EditUserInput!, userId: Float!): User!
+  editUser(user: EditUserInput!, userId: ID!): User!
+  assignAdmin(userId: ID!): User!
+  revokeAdmin(userId: ID!): User!
+  deleteUser(userId: ID!): Boolean!
   addReview(review: AddReviewInput!): Review!
-  editReview(review: EditReviewInput!, reviewId: Float!): Review!
-  deleteReview(reviewId: Float!): Boolean!
-  type(typeId: Float!): ProductType!
+  editReview(review: EditReviewInput!, reviewId: ID!): Review!
+  deleteReview(reviewId: ID!): Boolean!
   addType(type: AddTypeInput!): ProductType!
-  editType(type: EditTypeInput!, typeId: Float!): ProductType!
-  deleteType(typeId: Float!): Boolean!
+  editType(type: EditTypeInput!, typeId: ID!): ProductType!
+  deleteType(typeId: ID!): Boolean!
   addProduct(product: AddProductInput!): Product!
-  editProduct(product: EditProductInput!, productId: Float!): Product!
-  deleteProduct(productId: Float!): Boolean!
+  editProduct(product: EditProductInput!, productId: ID!): Product!
+  deleteProduct(productId: ID!): Boolean!
   addManufacturer(manufacturer: AddManufacturerInput!): Manufacturer!
-  editManufacturer(manufacturer: EditManufacturerInput!, manufacturerId: Float!): Manufacturer!
-  deleteManufacturer(manufacturer: EditManufacturerInput!, manufacturerId: Float!): Boolean!
+  editManufacturer(manufacturer: EditManufacturerInput!, manufacturerId: ID!): Manufacturer!
+  deleteManufacturer(manufacturerId: ID!): Boolean!
   addRank(rank: AddRankInput!): Rank!
-  editRank(rank: EditRankInput!, rankId: Float!): Rank!
-  deleteRank(rankId: Float!): Boolean!
+  editRank(rank: EditRankInput!, rankId: ID!): Rank!
+  deleteRank(rankId: ID!): Boolean!
 }
 
 type Product {
@@ -132,46 +134,48 @@ type ProductType {
 
 type Profile {
   id: ID!
-  aromaImportance: Float!
-  tasteImportance: Float!
-  bitternessImportance: Float!
-  priceImportance: Float!
-  energyImportance: Float!
-  overallImportance: Float!
+  aromaImportance: Int!
+  tasteImportance: Int!
+  bitternessImportance: Int!
+  priceImportance: Int!
+  energyImportance: Int!
+  overallImportance: Int!
   editedAt: String!
   createdAt: String!
 }
 
 type Query {
-  user(userId: Float!): User!
+  user(userId: ID!): User!
+  whoAmI: User!
   users: [User!]!
-  review(reviewId: Float!): Review!
+  review(reviewId: ID!): Review!
   reviews: [Review!]!
   types: [ProductType!]!
+  type(typeId: ID!): ProductType!
   products: [Product!]!
-  product(productId: Float!): Product!
+  product(productId: ID!): Product!
   manufacturers: [Manufacturer!]!
-  manufacturer(manufacturerId: Float!): Manufacturer!
+  manufacturer(manufacturerId: ID!): Manufacturer!
   ranks: [Rank!]!
-  rank(rankId: Float!): Rank!
+  rank(rankId: ID!): Rank!
 }
 
 type Rank {
   id: ID!
   name: String!
-  lowerRange: Float!
-  upperRange: Float!
+  lowerRange: Int!
+  upperRange: Int!
   addedAt: String!
 }
 
 type Review {
   id: ID!
-  aroma: Float!
-  taste: Float!
-  bitterness: Float!
-  energy: Float!
-  price: Float!
-  overall: Float!
+  aroma: Int!
+  taste: Int!
+  bitterness: Int!
+  energy: Int!
+  price: Int!
+  overall: Int!
   description: String!
   product: Product!
   author: User!
@@ -186,7 +190,7 @@ type User {
   email: String!
   country: String!
   avatarUrl: String!
-  role: String
+  role: String!
   reviews: [Review!]
   createdAt: String!
 }

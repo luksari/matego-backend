@@ -1,13 +1,13 @@
-import { InputType, Field } from 'type-graphql';
+import { InputType, Field, Int } from 'type-graphql';
 
 @InputType()
 export class AddRankInput {
   @Field()
   name: string;
 
-  @Field()
+  @Field(type => Int)
   lowerRange: number;
 
-  @Field()
+  @Field(type => Int)
   upperRange: number;
 }
