@@ -21,6 +21,6 @@ async function bootstrap() {
     ${ErrorMessages.TypeNotFound}`,
   };
   SwaggerModule.setup('api', app, swaggerDocument);
-  await app.listen(3000);
+  await app.listen(4000);
 }
 bootstrap();

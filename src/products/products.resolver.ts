@@ -16,8 +16,11 @@ import { UserRoles } from '../auth/guards/roles/user.roles';
 export class ProductsResolver {
   constructor(private readonly productsService: ProductsService) {}
   @Query(returns => [Product])
-  async products() {
-    return await this.productsService.getAll();
+  async products(
+    @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
+    @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
+  ) {
+    return await this.productsService.getAll(offset, perPage);
   }
 
   @Query(returns => Product)

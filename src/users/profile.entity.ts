@@ -17,7 +17,12 @@ export class Profile {
 
   @ManyToOne(type => Rank)
   @JoinColumn({ name: 'user_rank_id' })
+  @Field(type => Rank)
   rank: Rank;
+
+  @Column({ name: 'user_experience_points', nullable: false, default: 0 })
+  @Field(type => Int)
+  experiencePoints: number;
 
   @Column({ name: 'user_aroma_importance', nullable: false, default: 3 })
   @Field(type => Int)
