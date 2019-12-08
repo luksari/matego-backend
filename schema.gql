@@ -134,6 +134,8 @@ type ProductType {
 
 type Profile {
   id: ID!
+  rank: Rank!
+  experiencePoints: Int!
   aromaImportance: Int!
   tasteImportance: Int!
   bitternessImportance: Int!
@@ -147,14 +149,14 @@ type Profile {
 type Query {
   user(userId: ID!): User!
   whoAmI: User!
-  users: [User!]!
+  users(perPage: Int, offset: Int): [User!]!
   review(reviewId: ID!): Review!
-  reviews: [Review!]!
+  reviews(perPage: Int, offset: Int): [Review!]!
   types: [ProductType!]!
   type(typeId: ID!): ProductType!
-  products: [Product!]!
+  products(perPage: Int, offset: Int): [Product!]!
   product(productId: ID!): Product!
-  manufacturers: [Manufacturer!]!
+  manufacturers(perPage: Int, offset: Int): [Manufacturer!]!
   manufacturer(manufacturerId: ID!): Manufacturer!
   ranks: [Rank!]!
   rank(rankId: ID!): Rank!
@@ -188,7 +190,7 @@ type User {
   profile: Profile!
   username: String!
   email: String!
-  country: String!
+  country: String
   avatarUrl: String!
   role: String!
   reviews: [Review!]

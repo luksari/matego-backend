@@ -1,7 +1,7 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { Review } from './review.entity';
 import { ReviewsService } from './reviews.service';
-import { Ctx, buildSchema, ID } from 'type-graphql';
+import { Ctx, buildSchema, ID, Int } from 'type-graphql';
 import { Context } from 'apollo-server-core';
 import { NotFoundException, UseGuards } from '@nestjs/common';
 import { AddReviewInput } from './add.review.input';
@@ -28,8 +28,11 @@ export class ReviewsResolver {
   }
 
   @Query(returns => [Review])
-  async reviews() {
-    return await this.reviewService.getAll();
+  async reviews(
+    @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
+    @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
+  ) {
+    return await this.reviewService.getAll(offset, perPage);
   }
 
   @Mutation(returns => Review)

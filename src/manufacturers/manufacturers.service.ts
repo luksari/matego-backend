@@ -15,8 +15,14 @@ export class ManufacturersService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
-  async getAll(): Promise<Manufacturer[]> {
-    return await this.manufacturersRepository.find({ relations: ['products'] });
+  async getAll(_offset: number, _limit: number): Promise<Manufacturer[]> {
+    const offset = _offset || 0;
+    const limit = _limit || 15;
+    return await this.manufacturersRepository.find({
+      skip: offset,
+      take: limit,
+      relations: ['products'],
+    });
   }
   async findById(id: number): Promise<Manufacturer> {
     return await this.manufacturersRepository.findOne(id, {

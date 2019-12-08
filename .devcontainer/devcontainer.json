@@ -13,7 +13,7 @@
   },
 
   // Uncomment the next line if you want to publish any ports.
-  "appPort": [3000, 5555],
+  "appPort": [4000, 5555],
 
   // Uncomment the next line to run commands after the container is created.
   "postCreateCommand": "yarn install",

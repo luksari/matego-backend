@@ -21,8 +21,12 @@ export class ReviewsService {
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
   ) {}
-  async getAll(): Promise<Review[]> {
+  async getAll(_offset: number, _limit: number): Promise<Review[]> {
+    const offset = _offset || 0;
+    const limit = _limit || 15;
     return await this.reviewsRepository.find({
+      skip: offset,
+      take: limit,
       relations: ['author', 'product', 'product.type'],
     });
   }

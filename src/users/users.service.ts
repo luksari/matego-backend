@@ -16,8 +16,12 @@ export class UsersService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
   ) {}
-  async getAll(): Promise<User[]> {
+  async getAll(_offset: number, _limit: number): Promise<User[]> {
+    const offset = _offset || 0;
+    const limit = _limit || 15;
     return await this.usersRepository.find({
+      skip: offset,
+      take: limit,
       relations: ['reviews', 'profile', 'profile.rank', 'reviews.product'],
     });
   }

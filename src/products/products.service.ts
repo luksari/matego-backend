@@ -22,8 +22,13 @@ export class ProductsService {
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
   ) {}
-  async getAll() {
+  async getAll(_offset: number, _limit: number) {
+    const offset = _offset || 0;
+    const limit = _limit || 15;
+
     return this.productsRepository.find({
+      skip: offset,
+      take: limit,
       relations: ['manufacturer', 'type', 'reviews'],
     });
   }

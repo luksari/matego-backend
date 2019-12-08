@@ -35,7 +35,7 @@ export class User {
   mail: string;
 
   @Column({ name: 'account_country', nullable: true })
-  @Field()
+  @Field({ nullable: true })
   country?: string;
 
   @Column({ name: 'account_avatar_url', nullable: true })

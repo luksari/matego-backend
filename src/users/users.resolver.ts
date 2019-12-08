@@ -1,6 +1,6 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { Ctx, ID } from 'type-graphql';
+import { Ctx, ID, Int } from 'type-graphql';
 import { Context } from 'apollo-server-core';
 import { UseGuards, NotFoundException } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
@@ -36,8 +36,11 @@ export class UsersResolver {
   @Query(returns => [User])
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
-  async users() {
-    return await this.usersService.getAll();
+  async users(
+    @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
+    @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
+  ) {
+    return await this.usersService.getAll(offset, perPage);
   }
 
   @Mutation(returns => User)

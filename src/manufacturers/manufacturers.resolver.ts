@@ -8,15 +8,18 @@ import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
-import { ID, Arg } from 'type-graphql';
+import { ID, Arg, Int } from 'type-graphql';
 import { ErrorMessages } from '../common/error.messages';
 
 @Resolver(Manufacturer)
 export class ManufacturersResolver {
   constructor(private readonly manufacturersService: ManufacturersService) {}
   @Query(returns => [Manufacturer])
-  async manufacturers() {
-    return await this.manufacturersService.getAll();
+  async manufacturers(
+    @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
+    @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
+  ) {
+    return await this.manufacturersService.getAll(offset, perPage);
   }
 
   @Query(returns => Manufacturer)
