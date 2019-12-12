@@ -11,6 +11,7 @@ import { EditReviewInput } from './update.review.input';
 import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 import { ErrorMessages } from '../common/error.messages';
+import { Profile } from 'src/users/profile.entity';
 
 @Injectable()
 export class ReviewsService {
@@ -20,6 +21,8 @@ export class ReviewsService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
+    @InjectRepository(Profile)
+    private readonly profileRepository: Repository<Profile>,
   ) {}
   async getAll(_offset: number, _limit: number): Promise<Review[]> {
     const offset = _offset || 0;
@@ -44,16 +47,21 @@ export class ReviewsService {
     }
   }
   async createReview(addReviewInput: AddReviewInput) {
-    const user = await this.usersRepository.findOne(addReviewInput.authorId);
+    const user = await this.usersRepository.findOne(addReviewInput.authorId, {
+      relations: ['profile'],
+    });
     if (!user) {
       throw new NotFoundException(ErrorMessages.UserNotFound);
     }
     const product = await this.productsRepository.findOne(
       addReviewInput.productId,
+      { relations: ['reviews'] },
     );
     if (!product) {
       throw new NotFoundException(ErrorMessages.ProductNotFound);
     }
+    user.profile.experiencePoints++;
+    await this.profileRepository.update(user.profile.id, user.profile);
     const review = this.reviewsRepository.create({
       aroma: addReviewInput.aroma,
       bitterness: addReviewInput.bitterness,
