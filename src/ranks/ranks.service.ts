@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { AddRankInput } from './add.rank.input';
 import { EditRankInput } from './edit.rank.input';
 import { RanksResponse } from './ranks.response';
+import { Order } from 'src/common/enums';
 
 @Injectable()
 export class RanksService {
@@ -13,8 +14,13 @@ export class RanksService {
     private readonly ranksRepository: Repository<Rank>,
   ) {}
 
-  async getAll(): Promise<RanksResponse> {
-    const [items, total] = await this.ranksRepository.findAndCount();
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.ASC): Promise<RanksResponse> {
+    const [items, total] = await this.ranksRepository
+    .createQueryBuilder(Rank.name)
+    .orderBy(`${Rank.name}.${orderBy}`, order)
+    .skip(offset)
+    .take(limit)
+    .getManyAndCount();
     return { items, total }
   }
   async findById(id: number) {

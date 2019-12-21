@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { AddTypeInput } from './add.type.input';
 import { EditTypeInput } from './edit.type.input';
 import { TypesResponse } from './types.response';
+import { Order } from 'src/common/enums';
 
 @Injectable()
 export class TypesService {
@@ -12,8 +13,13 @@ export class TypesService {
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
   ) {}
-  async getAll(): Promise<TypesResponse> {
-    const [items, total] = await this.typesRepository.findAndCount();
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.ASC): Promise<TypesResponse> {
+    const [items, total] = await this.typesRepository
+    .createQueryBuilder(Type.name)
+    .orderBy(`${Type.name}.${orderBy}`, order)
+    .skip(offset)
+    .take(limit)
+    .getManyAndCount();;
     return { items, total }
   }
   async findById(id: number) {

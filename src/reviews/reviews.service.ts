@@ -12,6 +12,7 @@ import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 import { ErrorMessages } from '../common/error.messages';
 import { ReviewsResponse } from './reviews.response';
+import { Order } from 'src/common/enums';
 
 @Injectable()
 export class ReviewsService {
@@ -22,14 +23,16 @@ export class ReviewsService {
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
   ) {}
-  async getAll(_offset: number, _limit: number): Promise<ReviewsResponse> {
-    const offset = _offset || 0;
-    const limit = _limit || 15;
-    const [items, total] = await this.reviewsRepository.findAndCount({
-      skip: offset,
-      take: limit,
-      relations: ['author', 'product', 'product.type'],
-    });
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.ASC): Promise<ReviewsResponse> {
+    const [items, total] = await this.reviewsRepository
+    .createQueryBuilder(Review.name)
+    .leftJoinAndSelect(`${Review.name}.product`, 'product')
+    .leftJoinAndSelect(`${Review.name}.author`, 'author')
+    .leftJoinAndSelect('product.type', 'type')
+    .orderBy(`${Review.name}.${orderBy}`, order)
+    .skip(offset)
+    .take(limit)
+    .getManyAndCount();
 
     return { items, total };
   }

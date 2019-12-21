@@ -9,6 +9,8 @@ import { EditUserInput } from './edit.user.input';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ErrorMessages } from '../common/error.messages';
 import { UsersResponse } from './users.response';
+import { Review } from 'src/reviews/review.entity';
+import { Order } from 'src/common/enums';
 @Injectable()
 export class UsersService {
   constructor(
@@ -17,14 +19,18 @@ export class UsersService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
   ) {}
-  async getAll(_offset: number, _limit: number): Promise<UsersResponse> {
-    const offset = _offset || 0;
-    const limit = _limit || 15;
-    const [items, total] = await this.usersRepository.findAndCount({
-      skip: offset,
-      take: limit,
-      relations: ['reviews', 'profile', 'profile.rank', 'reviews.product'],
-    });
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.ASC): Promise<UsersResponse> {
+    const [items, total] = await this.usersRepository
+    .createQueryBuilder(User.name)
+    .leftJoinAndSelect(`${User.name}.profile`, 'profile')
+    .leftJoinAndSelect(`profile.rank`, 'rank')
+    .leftJoinAndSelect(`${User.name}.reviews`, 'reviews')
+    .leftJoinAndSelect(`reviews.product`, 'products')
+    .orderBy(`${User.name}.${orderBy}`, order)
+    .skip(offset)
+    .take(limit)
+    .getManyAndCount();
+
     return { items, total };
   }
 
