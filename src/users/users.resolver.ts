@@ -11,6 +11,7 @@ import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ErrorMessages } from '../common/error.messages';
+import { UsersResponse } from './users.response';
 
 @Resolver(User)
 export class UsersResolver {
@@ -33,7 +34,7 @@ export class UsersResolver {
     return await this.usersService.findById(user.id);
   }
 
-  @Query(returns => [User])
+  @Query(returns => UsersResponse)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
   async users(

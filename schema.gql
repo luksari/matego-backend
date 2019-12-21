@@ -159,7 +159,7 @@ type Profile {
 type Query {
   user(userId: ID!): User!
   whoAmI: User!
-  users(perPage: Int, offset: Int): [User!]!
+  users(perPage: Int, offset: Int): UsersResponse!
   review(reviewId: ID!): Review!
   reviews(perPage: Int, offset: Int): ReviewsResponse!
   types: TypesResponse!
@@ -220,4 +220,9 @@ type User {
   role: String!
   reviews: [Review!]
   createdAt: String!
+}
+
+type UsersResponse {
+  items: [User!]!
+  total: Int!
 }
