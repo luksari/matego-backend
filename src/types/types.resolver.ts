@@ -9,12 +9,13 @@ import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ID } from 'type-graphql';
+import { TypesResponse } from './types.response';
 
 @Resolver(Type)
 export class TypesResolver {
   constructor(private readonly typesService: TypesService) {}
 
-  @Query(returns => [Type])
+  @Query(returns => TypesResponse)
   async types() {
     return await this.typesService.getAll();
   }

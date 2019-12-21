@@ -6,6 +6,7 @@ import { AddManufacturerInput } from './add.manufacturer.input';
 import { User } from '../users/user.entity';
 import { EditManufacturerInput } from './edit.manufacturer.input';
 import { ErrorMessages } from '../common/error.messages';
+import { ManufacturersResponse } from './manufacturers.response';
 
 @Injectable()
 export class ManufacturersService {
@@ -15,14 +16,15 @@ export class ManufacturersService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
 
-  async getAll(_offset: number, _limit: number): Promise<Manufacturer[]> {
+  async getAll(_offset: number, _limit: number): Promise<ManufacturersResponse> {
     const offset = _offset || 0;
     const limit = _limit || 15;
-    return await this.manufacturersRepository.find({
+    const [items, total] = await this.manufacturersRepository.findAndCount({
       skip: offset,
       take: limit,
       relations: ['products'],
     });
+    return { items, total }
   }
   async findById(id: number): Promise<Manufacturer> {
     return await this.manufacturersRepository.findOne(id, {

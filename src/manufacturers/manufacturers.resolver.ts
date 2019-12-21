@@ -10,11 +10,12 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ID, Arg, Int } from 'type-graphql';
 import { ErrorMessages } from '../common/error.messages';
+import { ManufacturersResponse } from './manufacturers.response';
 
 @Resolver(Manufacturer)
 export class ManufacturersResolver {
   constructor(private readonly manufacturersService: ManufacturersService) {}
-  @Query(returns => [Manufacturer])
+  @Query(returns => ManufacturersResponse)
   async manufacturers(
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,

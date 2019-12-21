@@ -9,10 +9,11 @@ import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { Roles } from '../decorators/roles.decorator';
+import { RanksResponse } from './ranks.response';
 @Resolver('Ranks')
 export class RanksResolver {
   constructor(private readonly ranksService: RanksService) {}
-  @Query(returns => [Rank])
+  @Query(returns => RanksResponse)
   async ranks() {
     return await this.ranksService.getAll();
   }

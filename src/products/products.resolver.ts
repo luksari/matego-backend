@@ -12,10 +12,12 @@ import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
+import { ProductsResponse } from './products.response';
+
 @Resolver(Product)
 export class ProductsResolver {
   constructor(private readonly productsService: ProductsService) {}
-  @Query(returns => [Product])
+  @Query(returns => ProductsResponse)
   async products(
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,

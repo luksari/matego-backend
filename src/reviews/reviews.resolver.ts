@@ -10,6 +10,7 @@ import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
+import { ReviewsResponse } from './reviews.response';
 
 @Resolver(Review)
 export class ReviewsResolver {
@@ -27,7 +28,7 @@ export class ReviewsResolver {
     return review;
   }
 
-  @Query(returns => [Review])
+  @Query(returns => ReviewsResponse)
   async reviews(
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,

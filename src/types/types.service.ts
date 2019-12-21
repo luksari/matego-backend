@@ -4,6 +4,7 @@ import { Type } from './type.entity';
 import { Repository } from 'typeorm';
 import { AddTypeInput } from './add.type.input';
 import { EditTypeInput } from './edit.type.input';
+import { TypesResponse } from './types.response';
 
 @Injectable()
 export class TypesService {
@@ -11,8 +12,9 @@ export class TypesService {
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
   ) {}
-  async getAll() {
-    return await this.typesRepository.find();
+  async getAll(): Promise<TypesResponse> {
+    const [items, total] = await this.typesRepository.findAndCount();
+    return { items, total }
   }
   async findById(id: number) {
     return await this.typesRepository.findOne(id);

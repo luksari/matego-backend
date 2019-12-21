@@ -11,6 +11,7 @@ import { EditReviewInput } from './update.review.input';
 import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 import { ErrorMessages } from '../common/error.messages';
+import { ReviewsResponse } from './reviews.response';
 
 @Injectable()
 export class ReviewsService {
@@ -21,14 +22,16 @@ export class ReviewsService {
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
   ) {}
-  async getAll(_offset: number, _limit: number): Promise<Review[]> {
+  async getAll(_offset: number, _limit: number): Promise<ReviewsResponse> {
     const offset = _offset || 0;
     const limit = _limit || 15;
-    return await this.reviewsRepository.find({
+    const [items, total] = await this.reviewsRepository.findAndCount({
       skip: offset,
       take: limit,
       relations: ['author', 'product', 'product.type'],
     });
+
+    return { items, total };
   }
   async findById(id: number): Promise<Review> {
     return await this.reviewsRepository.findOne(id, {

@@ -8,6 +8,7 @@ import { Profile } from './profile.entity';
 import { EditUserInput } from './edit.user.input';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ErrorMessages } from '../common/error.messages';
+import { UsersResponse } from './users.response';
 @Injectable()
 export class UsersService {
   constructor(
@@ -16,14 +17,15 @@ export class UsersService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
   ) {}
-  async getAll(_offset: number, _limit: number): Promise<User[]> {
+  async getAll(_offset: number, _limit: number): Promise<UsersResponse> {
     const offset = _offset || 0;
     const limit = _limit || 15;
-    return await this.usersRepository.find({
+    const [items, total] = await this.usersRepository.findAndCount({
       skip: offset,
       take: limit,
       relations: ['reviews', 'profile', 'profile.rank', 'reviews.product'],
     });
+    return { items, total };
   }
 
   async findById(id: number) {
