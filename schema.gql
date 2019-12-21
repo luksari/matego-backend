@@ -128,7 +128,7 @@ type Product {
   name: String!
   details: String!
   photoUrl: String
-  addedAt: String!
+  createdAt: String!
 }
 
 type ProductsResponse {
@@ -139,7 +139,7 @@ type ProductsResponse {
 type ProductType {
   id: ID!
   name: String!
-  addedAt: String!
+  createdAt: String!
 }
 
 type Profile {
@@ -177,7 +177,7 @@ type Rank {
   name: String!
   lowerRange: Int!
   upperRange: Int!
-  addedAt: String!
+  createdAt: String!
 }
 
 type RanksResponse {
@@ -197,7 +197,7 @@ type Review {
   product: Product!
   author: User!
   editedAt: String!
-  addedAt: String!
+  createdAt: String!
 }
 
 type ReviewsResponse {
