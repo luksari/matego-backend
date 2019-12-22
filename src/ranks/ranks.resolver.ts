@@ -3,19 +3,25 @@ import { Rank } from './rank.entity';
 import { RanksService } from './ranks.service';
 import { AddRankInput } from './add.rank.input';
 import { EditRankInput } from './edit.rank.input';
-import { buildSchema, ID } from 'type-graphql';
+import { buildSchema, ID, Int } from 'type-graphql';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { Roles } from '../decorators/roles.decorator';
 import { RanksResponse } from './ranks.response';
+import { Order } from 'src/common/enums';
 @Resolver('Ranks')
 export class RanksResolver {
   constructor(private readonly ranksService: RanksService) {}
   @Query(returns => RanksResponse)
-  async ranks() {
-    return await this.ranksService.getAll();
+  async ranks(
+    @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
+    @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
+    @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
+    @Args({ name: 'order', type: () => String, nullable: true }) order: Order,
+  ) {
+    return await this.ranksService.getAll(offset, perPage, orderBy, order);
   }
 
   @Query(returns => Rank)

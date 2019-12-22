@@ -18,7 +18,7 @@ export class ManufacturersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.ASC): Promise<ManufacturersResponse> {
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.DESC): Promise<ManufacturersResponse> {
     const [items, total] = await this.manufacturersRepository
     .createQueryBuilder(Manufacturer.name)
     .leftJoinAndSelect(`${Manufacturer.name}.products`, 'products')

@@ -19,7 +19,7 @@ export class UsersService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.ASC): Promise<UsersResponse> {
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.DESC): Promise<UsersResponse> {
     const [items, total] = await this.usersRepository
     .createQueryBuilder(User.name)
     .leftJoinAndSelect(`${User.name}.profile`, 'profile')

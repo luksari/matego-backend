@@ -12,6 +12,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ErrorMessages } from '../common/error.messages';
 import { UsersResponse } from './users.response';
+import { Order } from 'src/common/enums';
 
 @Resolver(User)
 export class UsersResolver {
@@ -40,8 +41,10 @@ export class UsersResolver {
   async users(
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
+    @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
+    @Args({ name: 'order', type: () => String, nullable: true }) order: Order,
   ) {
-    return await this.usersService.getAll(offset, perPage);
+    return await this.usersService.getAll(offset, perPage, orderBy, order);
   }
 
   @Mutation(returns => User)

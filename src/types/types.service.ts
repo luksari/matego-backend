@@ -13,7 +13,7 @@ export class TypesService {
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.ASC): Promise<TypesResponse> {
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.DESC): Promise<TypesResponse> {
     const [items, total] = await this.typesRepository
     .createQueryBuilder(Type.name)
     .orderBy(`${Type.name}.${orderBy}`, order)

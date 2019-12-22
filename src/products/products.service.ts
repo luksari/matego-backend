@@ -24,7 +24,7 @@ export class ProductsService {
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.ASC): Promise<ProductsResponse> {
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.DESC): Promise<ProductsResponse> {
     const [items, total] = await this.productsRepository
     .createQueryBuilder(Product.name)
     .leftJoinAndSelect(`${Product.name}.manufacturer`, 'manufacturer')
