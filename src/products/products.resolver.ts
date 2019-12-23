@@ -13,7 +13,7 @@ import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ProductsResponse } from './products.response';
-import { Order } from 'src/common/enums';
+import { OrderEnum } from '../common/enums';
 
 @Resolver(Product)
 export class ProductsResolver {
@@ -23,7 +23,7 @@ export class ProductsResolver {
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
     @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
-    @Args({ name: 'order', type: () => String, nullable: true }) order: Order,
+    @Args({ name: 'order', type: () => String, nullable: true }) order: OrderEnum,
   ) {
     return await this.productsService.getAll(offset, perPage, orderBy, order);
   }

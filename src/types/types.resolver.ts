@@ -10,7 +10,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ID, Int } from 'type-graphql';
 import { TypesResponse } from './types.response';
-import { Order } from 'src/common/enums';
+import { OrderEnum } from '../common/enums';
 
 @Resolver(Type)
 export class TypesResolver {
@@ -21,7 +21,7 @@ export class TypesResolver {
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
     @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
-    @Args({ name: 'order', type: () => String, nullable: true }) order: Order,
+    @Args({ name: 'order', type: () => String, nullable: true }) order: OrderEnum,
   ) {
     return await this.typesService.getAll(offset, perPage, orderBy, order);
   }

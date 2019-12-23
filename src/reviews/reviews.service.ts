@@ -12,7 +12,7 @@ import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 import { ErrorMessages } from '../common/error.messages';
 import { ReviewsResponse } from './reviews.response';
-import { Order } from 'src/common/enums';
+import { OrderEnum } from '../common/enums';
 
 @Injectable()
 export class ReviewsService {
@@ -23,7 +23,7 @@ export class ReviewsService {
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.DESC): Promise<ReviewsResponse> {
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<ReviewsResponse> {
     const [items, total] = await this.reviewsRepository
     .createQueryBuilder(Review.name)
     .leftJoinAndSelect(`${Review.name}.product`, 'product')

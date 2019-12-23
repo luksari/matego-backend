@@ -7,7 +7,7 @@ import { User } from '../users/user.entity';
 import { EditManufacturerInput } from './edit.manufacturer.input';
 import { ErrorMessages } from '../common/error.messages';
 import { ManufacturersResponse } from './manufacturers.response';
-import { Order } from 'src/common/enums';
+import { OrderEnum } from '../common/enums';
 
 @Injectable()
 export class ManufacturersService {
@@ -18,7 +18,7 @@ export class ManufacturersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.DESC): Promise<ManufacturersResponse> {
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<ManufacturersResponse> {
     const [items, total] = await this.manufacturersRepository
     .createQueryBuilder(Manufacturer.name)
     .leftJoinAndSelect(`${Manufacturer.name}.products`, 'products')

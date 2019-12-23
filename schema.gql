@@ -159,16 +159,16 @@ type Profile {
 type Query {
   user(userId: ID!): User!
   whoAmI: User!
-  users(perPage: Int, offset: Int): UsersResponse!
+  users(order: String, orderBy: String, perPage: Int, offset: Int): UsersResponse!
   review(reviewId: ID!): Review!
-  reviews(perPage: Int, offset: Int): ReviewsResponse!
-  types: TypesResponse!
+  reviews(order: String, orderBy: String, perPage: Int, offset: Int): ReviewsResponse!
+  types(order: String, orderBy: String, perPage: Int, offset: Int): TypesResponse!
   type(typeId: ID!): ProductType!
-  products(perPage: Int, offset: Int): ProductsResponse!
+  products(order: String, orderBy: String, perPage: Int, offset: Int): ProductsResponse!
   product(productId: ID!): Product!
-  manufacturers(perPage: Int, offset: Int): ManufacturersResponse!
+  manufacturers(order: String, orderBy: String, perPage: Int, offset: Int): ManufacturersResponse!
   manufacturer(manufacturerId: ID!): Manufacturer!
-  ranks: RanksResponse!
+  ranks(order: String, orderBy: String, perPage: Int, offset: Int): RanksResponse!
   rank(rankId: ID!): Rank!
 }
 

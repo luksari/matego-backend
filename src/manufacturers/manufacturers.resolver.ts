@@ -11,7 +11,7 @@ import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ID, Arg, Int } from 'type-graphql';
 import { ErrorMessages } from '../common/error.messages';
 import { ManufacturersResponse } from './manufacturers.response';
-import { Order } from 'src/common/enums';
+import { OrderEnum } from '../common/enums';
 
 @Resolver(Manufacturer)
 export class ManufacturersResolver {
@@ -21,7 +21,7 @@ export class ManufacturersResolver {
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
     @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
-    @Args({ name: 'order', type: () => String, nullable: true }) order: Order,
+    @Args({ name: 'order', type: () => String, nullable: true }) order: OrderEnum,
   ) {
     return await this.manufacturersService.getAll(offset, perPage, orderBy, order);
   }

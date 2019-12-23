@@ -12,7 +12,7 @@ import { Manufacturer } from '../manufacturers/manufacturer.entity';
 import { Type } from '../types/type.entity';
 import { ErrorMessages } from '../common/error.messages';
 import { ProductsResponse } from './products.response';
-import { Order } from 'src/common/enums';
+import { OrderEnum } from '../common/enums';
 
 @Injectable()
 export class ProductsService {
@@ -24,7 +24,7 @@ export class ProductsService {
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.DESC): Promise<ProductsResponse> {
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<ProductsResponse> {
     const [items, total] = await this.productsRepository
     .createQueryBuilder(Product.name)
     .leftJoinAndSelect(`${Product.name}.manufacturer`, 'manufacturer')

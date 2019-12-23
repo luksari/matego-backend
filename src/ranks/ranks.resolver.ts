@@ -10,7 +10,7 @@ import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { Roles } from '../decorators/roles.decorator';
 import { RanksResponse } from './ranks.response';
-import { Order } from 'src/common/enums';
+import { OrderEnum } from '../common/enums';
 @Resolver('Ranks')
 export class RanksResolver {
   constructor(private readonly ranksService: RanksService) {}
@@ -19,7 +19,7 @@ export class RanksResolver {
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
     @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
-    @Args({ name: 'order', type: () => String, nullable: true }) order: Order,
+    @Args({ name: 'order', type: () => String, nullable: true }) order: OrderEnum,
   ) {
     return await this.ranksService.getAll(offset, perPage, orderBy, order);
   }

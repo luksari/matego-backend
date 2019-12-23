@@ -1,5 +1,5 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { Repository, Equal } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash, verify } from 'argon2';
@@ -9,8 +9,8 @@ import { EditUserInput } from './edit.user.input';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ErrorMessages } from '../common/error.messages';
 import { UsersResponse } from './users.response';
-import { Review } from 'src/reviews/review.entity';
-import { Order } from 'src/common/enums';
+import { OrderEnum } from '../common/enums';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -19,7 +19,8 @@ export class UsersService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: Order = Order.DESC): Promise<UsersResponse> {
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<UsersResponse> {
+    
     const [items, total] = await this.usersRepository
     .createQueryBuilder(User.name)
     .leftJoinAndSelect(`${User.name}.profile`, 'profile')
