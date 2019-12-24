@@ -32,7 +32,7 @@ export class User {
 
   @Column({ name: 'account_mail', nullable: false })
   @Field({ name: 'email' })
-  mail: string;
+  email: string;
 
   @Column({ name: 'account_country', nullable: true })
   @Field({ nullable: true })

@@ -9,7 +9,7 @@ import { EditUserInput } from './edit.user.input';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ErrorMessages } from '../common/error.messages';
 import { UsersResponse } from './users.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
 
 @Injectable()
 export class UsersService {
@@ -49,7 +49,7 @@ export class UsersService {
       username: createUserDto.username,
       password,
       profile,
-      mail: createUserDto.email,
+      email: createUserDto.email,
     });
     return await this.usersRepository.save(user);
   }

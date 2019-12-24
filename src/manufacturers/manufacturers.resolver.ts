@@ -11,7 +11,7 @@ import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ID, Arg, Int } from 'type-graphql';
 import { ErrorMessages } from '../common/error.messages';
 import { ManufacturersResponse } from './manufacturers.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
 
 @Resolver(Manufacturer)
 export class ManufacturersResolver {

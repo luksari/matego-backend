@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Manufacturer } from './manufacturer.entity';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AddManufacturerInput } from './add.manufacturer.input';
 import { User } from '../users/user.entity';
 import { EditManufacturerInput } from './edit.manufacturer.input';
 import { ErrorMessages } from '../common/error.messages';
 import { ManufacturersResponse } from './manufacturers.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
 
 @Injectable()
 export class ManufacturersService {

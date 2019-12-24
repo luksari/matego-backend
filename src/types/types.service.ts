@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { AddTypeInput } from './add.type.input';
 import { EditTypeInput } from './edit.type.input';
 import { TypesResponse } from './types.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
 
 @Injectable()
 export class TypesService {

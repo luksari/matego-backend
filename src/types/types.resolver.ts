@@ -10,7 +10,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ID, Int } from 'type-graphql';
 import { TypesResponse } from './types.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
 
 @Resolver(Type)
 export class TypesResolver {

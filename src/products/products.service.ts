@@ -12,7 +12,7 @@ import { Manufacturer } from '../manufacturers/manufacturer.entity';
 import { Type } from '../types/type.entity';
 import { ErrorMessages } from '../common/error.messages';
 import { ProductsResponse } from './products.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
 
 @Injectable()
 export class ProductsService {

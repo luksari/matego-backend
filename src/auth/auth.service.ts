@@ -27,7 +27,7 @@ export class AuthService {
     const response: AuthRegisterResponse = {
       id: user.id,
       username: user.username,
-      email: user.mail,
+      email: user.email,
     };
     return response;
   }
@@ -45,7 +45,7 @@ export class AuthService {
     const payload: JwtPayload = {
       id: user.id,
       username: user.username,
-      email: user.mail,
+      email: user.email,
     };
     const accessToken = await this.jwtService.signAsync(payload, {
       expiresIn: '12h',

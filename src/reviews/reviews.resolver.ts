@@ -11,7 +11,7 @@ import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ReviewsResponse } from './reviews.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
 
 @Resolver(Review)
 export class ReviewsResolver {

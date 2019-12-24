@@ -12,7 +12,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ErrorMessages } from '../common/error.messages';
 import { UsersResponse } from './users.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
 
 @Resolver(User)
 export class UsersResolver {

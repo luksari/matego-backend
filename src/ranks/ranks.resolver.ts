@@ -10,7 +10,8 @@ import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { Roles } from '../decorators/roles.decorator';
 import { RanksResponse } from './ranks.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
+
 @Resolver('Ranks')
 export class RanksResolver {
   constructor(private readonly ranksService: RanksService) {}

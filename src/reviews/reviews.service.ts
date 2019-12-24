@@ -12,7 +12,7 @@ import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 import { ErrorMessages } from '../common/error.messages';
 import { ReviewsResponse } from './reviews.response';
-import { OrderEnum } from '../common/enums';
+import { OrderEnum } from '../common/enum';
 
 @Injectable()
 export class ReviewsService {
