@@ -26,5 +26,5 @@ export class Rank {
     name: 'rank_added_at',
   })
   @Field()
-  addedAt: string;
+  createdAt: string;
 }

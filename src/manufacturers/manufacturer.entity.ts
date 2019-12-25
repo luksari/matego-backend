@@ -7,7 +7,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { ObjectType, Field, ID } from 'type-graphql';
+import { ObjectType, Field, ID, Int } from 'type-graphql';
 import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 
@@ -52,5 +52,5 @@ export class Manufacturer {
     name: 'manufacturer_created_at',
   })
   @Field()
-  addedAt: string;
+  createdAt: string;
 }

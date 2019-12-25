@@ -69,5 +69,5 @@ export class Review {
     name: 'review_created_at',
   })
   @Field()
-  addedAt: string;
+  createdAt: string;
 }

@@ -11,6 +11,8 @@ import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ErrorMessages } from '../common/error.messages';
+import { UsersResponse } from './users.response';
+import { OrderEnum } from '../common/enum';
 
 @Resolver(User)
 export class UsersResolver {
@@ -33,14 +35,16 @@ export class UsersResolver {
     return await this.usersService.findById(user.id);
   }
 
-  @Query(returns => [User])
+  @Query(returns => UsersResponse)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
   async users(
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
+    @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
+    @Args({ name: 'order', type: () => String, nullable: true }) order: OrderEnum,
   ) {
-    return await this.usersService.getAll(offset, perPage);
+    return await this.usersService.getAll(offset, perPage, orderBy, order);
   }
 
   @Mutation(returns => User)

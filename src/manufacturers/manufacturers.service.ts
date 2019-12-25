@@ -1,28 +1,32 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Manufacturer } from './manufacturer.entity';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AddManufacturerInput } from './add.manufacturer.input';
 import { User } from '../users/user.entity';
 import { EditManufacturerInput } from './edit.manufacturer.input';
 import { ErrorMessages } from '../common/error.messages';
+import { ManufacturersResponse } from './manufacturers.response';
+import { OrderEnum } from '../common/enum';
 
 @Injectable()
 export class ManufacturersService {
   constructor(
     @InjectRepository(Manufacturer)
     private readonly manufacturersRepository: Repository<Manufacturer>,
-    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(User) 
+    private readonly usersRepository: Repository<User>,
   ) {}
 
-  async getAll(_offset: number, _limit: number): Promise<Manufacturer[]> {
-    const offset = _offset || 0;
-    const limit = _limit || 15;
-    return await this.manufacturersRepository.find({
-      skip: offset,
-      take: limit,
-      relations: ['products'],
-    });
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<ManufacturersResponse> {
+    const [items, total] = await this.manufacturersRepository
+    .createQueryBuilder(Manufacturer.name)
+    .leftJoinAndSelect(`${Manufacturer.name}.products`, 'products')
+    .orderBy(`${Manufacturer.name}.${orderBy}`, order)
+    .skip(offset)
+    .take(limit)
+    .getManyAndCount();
+    return { items, total }
   }
   async findById(id: number): Promise<Manufacturer> {
     return await this.manufacturersRepository.findOne(id, {

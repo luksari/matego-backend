@@ -11,6 +11,8 @@ import { EditProductInput } from './edit.product.input';
 import { Manufacturer } from '../manufacturers/manufacturer.entity';
 import { Type } from '../types/type.entity';
 import { ErrorMessages } from '../common/error.messages';
+import { ProductsResponse } from './products.response';
+import { OrderEnum } from '../common/enum';
 
 @Injectable()
 export class ProductsService {
@@ -22,15 +24,18 @@ export class ProductsService {
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
   ) {}
-  async getAll(_offset: number, _limit: number) {
-    const offset = _offset || 0;
-    const limit = _limit || 15;
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<ProductsResponse> {
+    const [items, total] = await this.productsRepository
+    .createQueryBuilder(Product.name)
+    .leftJoinAndSelect(`${Product.name}.manufacturer`, 'manufacturer')
+    .leftJoinAndSelect(`${Product.name}.type`, 'type')
+    .leftJoinAndSelect(`${Product.name}.reviews`, 'reviews')
+    .orderBy(`${Product.name}.${orderBy}`, order)
+    .skip(offset)
+    .take(limit)
+    .getManyAndCount();
 
-    return this.productsRepository.find({
-      skip: offset,
-      take: limit,
-      relations: ['manufacturer', 'type', 'reviews'],
-    });
+    return { items, total }
   }
   async findById(id: number) {
     return this.productsRepository.findOne(id, {
