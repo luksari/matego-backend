@@ -11,6 +11,8 @@ import { EditReviewInput } from './update.review.input';
 import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 import { ErrorMessages } from '../common/error.messages';
+import { ReviewsResponse } from './reviews.response';
+import { OrderEnum } from '../common/enum';
 
 @Injectable()
 export class ReviewsService {
@@ -21,14 +23,18 @@ export class ReviewsService {
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
   ) {}
-  async getAll(_offset: number, _limit: number): Promise<Review[]> {
-    const offset = _offset || 0;
-    const limit = _limit || 15;
-    return await this.reviewsRepository.find({
-      skip: offset,
-      take: limit,
-      relations: ['author', 'product', 'product.type'],
-    });
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<ReviewsResponse> {
+    const [items, total] = await this.reviewsRepository
+    .createQueryBuilder(Review.name)
+    .leftJoinAndSelect(`${Review.name}.product`, 'product')
+    .leftJoinAndSelect(`${Review.name}.author`, 'author')
+    .leftJoinAndSelect('product.type', 'type')
+    .orderBy(`${Review.name}.${orderBy}`, order)
+    .skip(offset)
+    .take(limit)
+    .getManyAndCount();
+
+    return { items, total };
   }
   async findById(id: number): Promise<Review> {
     return await this.reviewsRepository.findOne(id, {

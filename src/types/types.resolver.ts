@@ -8,15 +8,22 @@ import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
-import { ID } from 'type-graphql';
+import { ID, Int } from 'type-graphql';
+import { TypesResponse } from './types.response';
+import { OrderEnum } from '../common/enum';
 
 @Resolver(Type)
 export class TypesResolver {
   constructor(private readonly typesService: TypesService) {}
 
-  @Query(returns => [Type])
-  async types() {
-    return await this.typesService.getAll();
+  @Query(returns => TypesResponse)
+  async types(
+    @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
+    @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
+    @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
+    @Args({ name: 'order', type: () => String, nullable: true }) order: OrderEnum,
+  ) {
+    return await this.typesService.getAll(offset, perPage, orderBy, order);
   }
 
   @Query(returns => Type)

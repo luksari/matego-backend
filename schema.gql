@@ -90,7 +90,12 @@ type Manufacturer {
   photoUrl: String
   products: [Product!]
   editedAt: String!
-  addedAt: String!
+  createdAt: String!
+}
+
+type ManufacturersResponse {
+  items: [Manufacturer!]!
+  total: Int!
 }
 
 type Mutation {
@@ -123,13 +128,18 @@ type Product {
   name: String!
   details: String!
   photoUrl: String
-  addedAt: String!
+  createdAt: String!
+}
+
+type ProductsResponse {
+  items: [Product!]!
+  total: Int!
 }
 
 type ProductType {
   id: ID!
   name: String!
-  addedAt: String!
+  createdAt: String!
 }
 
 type Profile {
@@ -149,16 +159,16 @@ type Profile {
 type Query {
   user(userId: ID!): User!
   whoAmI: User!
-  users(perPage: Int, offset: Int): [User!]!
+  users(order: String, orderBy: String, perPage: Int, offset: Int): UsersResponse!
   review(reviewId: ID!): Review!
-  reviews(perPage: Int, offset: Int): [Review!]!
-  types: [ProductType!]!
+  reviews(order: String, orderBy: String, perPage: Int, offset: Int): ReviewsResponse!
+  types(order: String, orderBy: String, perPage: Int, offset: Int): TypesResponse!
   type(typeId: ID!): ProductType!
-  products(perPage: Int, offset: Int): [Product!]!
+  products(order: String, orderBy: String, perPage: Int, offset: Int): ProductsResponse!
   product(productId: ID!): Product!
-  manufacturers(perPage: Int, offset: Int): [Manufacturer!]!
+  manufacturers(order: String, orderBy: String, perPage: Int, offset: Int): ManufacturersResponse!
   manufacturer(manufacturerId: ID!): Manufacturer!
-  ranks: [Rank!]!
+  ranks(order: String, orderBy: String, perPage: Int, offset: Int): RanksResponse!
   rank(rankId: ID!): Rank!
 }
 
@@ -167,7 +177,12 @@ type Rank {
   name: String!
   lowerRange: Int!
   upperRange: Int!
-  addedAt: String!
+  createdAt: String!
+}
+
+type RanksResponse {
+  items: [Rank!]!
+  total: Int!
 }
 
 type Review {
@@ -182,7 +197,17 @@ type Review {
   product: Product!
   author: User!
   editedAt: String!
-  addedAt: String!
+  createdAt: String!
+}
+
+type ReviewsResponse {
+  items: [Review!]!
+  total: Int!
+}
+
+type TypesResponse {
+  items: [ProductType!]!
+  total: Int!
 }
 
 type User {
@@ -195,4 +220,9 @@ type User {
   role: String!
   reviews: [Review!]
   createdAt: String!
+}
+
+type UsersResponse {
+  items: [User!]!
+  total: Int!
 }

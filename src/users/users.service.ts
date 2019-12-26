@@ -1,5 +1,5 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { Repository, Equal } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash, verify } from 'argon2';
@@ -8,6 +8,9 @@ import { Profile } from './profile.entity';
 import { EditUserInput } from './edit.user.input';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ErrorMessages } from '../common/error.messages';
+import { UsersResponse } from './users.response';
+import { OrderEnum } from '../common/enum';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -16,14 +19,20 @@ export class UsersService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
   ) {}
-  async getAll(_offset: number, _limit: number): Promise<User[]> {
-    const offset = _offset || 0;
-    const limit = _limit || 15;
-    return await this.usersRepository.find({
-      skip: offset,
-      take: limit,
-      relations: ['reviews', 'profile', 'profile.rank', 'reviews.product'],
-    });
+  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<UsersResponse> {
+    
+    const [items, total] = await this.usersRepository
+    .createQueryBuilder(User.name)
+    .leftJoinAndSelect(`${User.name}.profile`, 'profile')
+    .leftJoinAndSelect(`profile.rank`, 'rank')
+    .leftJoinAndSelect(`${User.name}.reviews`, 'reviews')
+    .leftJoinAndSelect(`reviews.product`, 'products')
+    .orderBy(`${User.name}.${orderBy}`, order)
+    .skip(offset)
+    .take(limit)
+    .getManyAndCount();
+
+    return { items, total };
   }
 
   async findById(id: number) {
@@ -40,7 +49,7 @@ export class UsersService {
       username: createUserDto.username,
       password,
       profile,
-      mail: createUserDto.email,
+      email: createUserDto.email,
     });
     return await this.usersRepository.save(user);
   }

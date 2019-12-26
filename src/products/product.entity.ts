@@ -50,5 +50,5 @@ export class Product {
     name: 'product_added_at',
   })
   @Field()
-  addedAt: string;
+  createdAt: string;
 }

@@ -18,5 +18,5 @@ export class Type {
     name: 'type_added_at',
   })
   @Field()
-  addedAt: string;
+  createdAt: string;
 }
