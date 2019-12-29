@@ -216,7 +216,7 @@ type User {
   username: String!
   email: String!
   country: String
-  avatarUrl: String!
+  avatarUrl: String
   role: String!
   reviews: [Review!]
   createdAt: String!

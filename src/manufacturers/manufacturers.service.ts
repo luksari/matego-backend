@@ -14,19 +14,24 @@ export class ManufacturersService {
   constructor(
     @InjectRepository(Manufacturer)
     private readonly manufacturersRepository: Repository<Manufacturer>,
-    @InjectRepository(User) 
+    @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<ManufacturersResponse> {
+  async getAll(
+    offset: number = 0,
+    limit: number = 15,
+    orderBy: string = 'id',
+    order: OrderEnum = OrderEnum.DESC,
+  ): Promise<ManufacturersResponse> {
     const [items, total] = await this.manufacturersRepository
-    .createQueryBuilder(Manufacturer.name)
-    .leftJoinAndSelect(`${Manufacturer.name}.products`, 'products')
-    .orderBy(`${Manufacturer.name}.${orderBy}`, order)
-    .skip(offset)
-    .take(limit)
-    .getManyAndCount();
-    return { items, total }
+      .createQueryBuilder(Manufacturer.name)
+      .leftJoinAndSelect(`${Manufacturer.name}.products`, 'products')
+      .orderBy(`${Manufacturer.name}.${orderBy}`, order)
+      .skip(offset)
+      .take(limit)
+      .getManyAndCount();
+    return { items, total };
   }
   async findById(id: number): Promise<Manufacturer> {
     return await this.manufacturersRepository.findOne(id, {
@@ -62,7 +67,6 @@ export class ManufacturersService {
   ) {
     const manufacturer = await this.findById(id);
     Object.assign(manufacturer, editManufacturer);
-    await this.manufacturersRepository.update(id, manufacturer);
-    return manufacturer;
+    return await this.manufacturersRepository.save(manufacturer);
   }
 }
