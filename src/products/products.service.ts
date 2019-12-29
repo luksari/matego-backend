@@ -24,18 +24,23 @@ export class ProductsService {
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<ProductsResponse> {
+  async getAll(
+    offset: number = 0,
+    limit: number = 15,
+    orderBy: string = 'id',
+    order: OrderEnum = OrderEnum.DESC,
+  ): Promise<ProductsResponse> {
     const [items, total] = await this.productsRepository
-    .createQueryBuilder(Product.name)
-    .leftJoinAndSelect(`${Product.name}.manufacturer`, 'manufacturer')
-    .leftJoinAndSelect(`${Product.name}.type`, 'type')
-    .leftJoinAndSelect(`${Product.name}.reviews`, 'reviews')
-    .orderBy(`${Product.name}.${orderBy}`, order)
-    .skip(offset)
-    .take(limit)
-    .getManyAndCount();
+      .createQueryBuilder(Product.name)
+      .leftJoinAndSelect(`${Product.name}.manufacturer`, 'manufacturer')
+      .leftJoinAndSelect(`${Product.name}.type`, 'type')
+      .leftJoinAndSelect(`${Product.name}.reviews`, 'reviews')
+      .orderBy(`${Product.name}.${orderBy}`, order)
+      .skip(offset)
+      .take(limit)
+      .getManyAndCount();
 
-    return { items, total }
+    return { items, total };
   }
   async findById(id: number) {
     return this.productsRepository.findOne(id, {
@@ -65,12 +70,7 @@ export class ProductsService {
   async editProduct(id: number, editProduct: EditProductInput) {
     const product = await this.findById(id);
     Object.assign(product, editProduct);
-    await this.productsRepository.update(id, {
-      name: product.name,
-      details: product.details,
-      photoUrl: product.photoUrl,
-    });
-    return product;
+    return await this.productsRepository.save(product);
   }
   async deleteProduct(id: number) {
     try {
