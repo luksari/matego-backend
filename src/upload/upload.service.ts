@@ -12,20 +12,16 @@ export class UploadService {
   });
 
   async uploadFile(@Req() request, @Res() response) {
-    try {
-      await this.upload(request, response, error => {
-        if (error) {
-          throw new NotFoundException();
-        }
-        if (response.req.file) {
-          return response.status(200).json({ url: response.req.file.location });
-        } else {
-          return response.status(404).json({ message: 'ErrorFileUpload' });
-        }
-      });
-    } catch (error) {
-      throw new NotFoundException();
-    }
+    await this.upload(request, response, error => {
+      if (error) {
+        console.log(error);
+        throw new NotFoundException();
+      }
+      if (response.req.file) {
+        return response.status(200).json({ url: response.req.file.location });
+      }
+      return response.status(404).json({ message: 'ErrorFileUpload' });
+    });
   }
 
   upload = multer({
