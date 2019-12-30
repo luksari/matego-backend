@@ -6,15 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from './config/config.module';
 import { TypeOrmConfigService } from './config/typeorm.config.service';
 import { GraphQLModule } from '@nestjs/graphql';
-import { UsersResolver } from './users/users.resolver';
 import { ReviewsModule } from './reviews/reviews.module';
 import { TypesModule } from './types/types.module';
 import { ProductsModule } from './products/products.module';
 import { ManufacturersModule } from './manufacturers/manufacturers.module';
 import { RanksModule } from './ranks/ranks.module';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './auth/guards/roles.guard';
 import { UploadService } from './upload/upload.service';
+
 @Module({
   imports: [
     AuthModule,
