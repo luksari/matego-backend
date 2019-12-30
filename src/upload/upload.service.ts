@@ -17,7 +17,11 @@ export class UploadService {
         if (error) {
           throw new NotFoundException();
         }
-        return response.status(200).json({ url: response.req.file.location });
+        if (response.req.file) {
+          return response.status(200).json({ url: response.req.file.location });
+        } else {
+          return response.status(404).json({ message: 'ErrorFileUpload' });
+        }
       });
     } catch (error) {
       throw new NotFoundException();
