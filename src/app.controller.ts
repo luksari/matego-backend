@@ -23,6 +23,11 @@ export class AppController {
   @Post('upload')
   @UseGuards(AuthGuard('jwt'))
   async upload(@Req() req, @Res() res, @UploadedFile() file) {
-    await this.uploadService.uploadFile(req, res);
+    try {
+      await this.uploadService.uploadFile(req, res);
+    } catch (error) {
+      console.log(error);
+      return res.status(404).json({ error });
+    }
   }
 }
