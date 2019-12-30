@@ -87,6 +87,9 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "setupFiles": [
+      "dotenv/config"
+    ],
     "coverageDirectory": "./coverage",
     "testEnvironment": "node"
   }
