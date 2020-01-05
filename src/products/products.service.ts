@@ -29,16 +29,22 @@ export class ProductsService {
     limit: number = 15,
     orderBy: string = 'id',
     order: OrderEnum = OrderEnum.DESC,
+    searchByName: string,
   ): Promise<ProductsResponse> {
-    const [items, total] = await this.productsRepository
+    let query = this.productsRepository
       .createQueryBuilder(Product.name)
       .leftJoinAndSelect(`${Product.name}.manufacturer`, 'manufacturer')
       .leftJoinAndSelect(`${Product.name}.type`, 'type')
       .leftJoinAndSelect(`${Product.name}.reviews`, 'reviews')
       .orderBy(`${Product.name}.${orderBy}`, order)
       .skip(offset)
-      .take(limit)
-      .getManyAndCount();
+      .take(limit);
+    if (searchByName) {
+      query = query.where(`${Product.name}.name ilike :name`, {
+        name: `%${searchByName}%`,
+      });
+    }
+    const [items, total] = await query.getManyAndCount();
 
     return { items, total };
   }
@@ -67,11 +73,13 @@ export class ProductsService {
     });
     return await this.productsRepository.save(product);
   }
+
   async editProduct(id: number, editProduct: EditProductInput) {
     const product = await this.findById(id);
     Object.assign(product, editProduct);
     return await this.productsRepository.save(product);
   }
+
   async deleteProduct(id: number) {
     try {
       await this.productsRepository.delete(id);
