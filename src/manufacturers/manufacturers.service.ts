@@ -23,14 +23,22 @@ export class ManufacturersService {
     limit: number = 15,
     orderBy: string = 'id',
     order: OrderEnum = OrderEnum.DESC,
+    searchByName: string,
   ): Promise<ManufacturersResponse> {
-    const [items, total] = await this.manufacturersRepository
+    let query = this.manufacturersRepository
       .createQueryBuilder(Manufacturer.name)
       .leftJoinAndSelect(`${Manufacturer.name}.products`, 'products')
       .orderBy(`${Manufacturer.name}.${orderBy}`, order)
       .skip(offset)
-      .take(limit)
-      .getManyAndCount();
+      .take(limit);
+
+    if (searchByName) {
+      query = query.where(`${Manufacturer.name}.name ilike :name`, {
+        name: `%${searchByName}%`,
+      });
+    }
+
+    const [items, total] = await query.getManyAndCount();
     return { items, total };
   }
   async findById(id: number): Promise<Manufacturer> {

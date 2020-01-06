@@ -128,6 +128,12 @@ type Product {
   name: String!
   details: String!
   photoUrl: String
+  aromaAverage: Float!
+  tasteAverage: Float!
+  bitternessAverage: Float!
+  energyAverage: Float!
+  priceAverage: Float!
+  overallAverage: Float!
   createdAt: String!
 }
 
@@ -164,9 +170,9 @@ type Query {
   reviews(order: String, orderBy: String, perPage: Int, offset: Int): ReviewsResponse!
   types(order: String, orderBy: String, perPage: Int, offset: Int): TypesResponse!
   type(typeId: ID!): ProductType!
-  products(order: String, orderBy: String, perPage: Int, offset: Int): ProductsResponse!
+  products(searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ProductsResponse!
   product(productId: ID!): Product!
-  manufacturers(order: String, orderBy: String, perPage: Int, offset: Int): ManufacturersResponse!
+  manufacturers(searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ManufacturersResponse!
   manufacturer(manufacturerId: ID!): Manufacturer!
   ranks(order: String, orderBy: String, perPage: Int, offset: Int): RanksResponse!
   rank(rankId: ID!): Rank!

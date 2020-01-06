@@ -19,10 +19,20 @@ export class ProductsResolver {
   async products(
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
-    @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
-    @Args({ name: 'order', type: () => String, nullable: true }) order: OrderEnum,
+    @Args({ name: 'orderBy', type: () => String, nullable: true })
+    orderBy: string,
+    @Args({ name: 'order', type: () => String, nullable: true })
+    order: OrderEnum,
+    @Args({ name: 'searchByName', type: () => String, nullable: true })
+    searchByName: string,
   ) {
-    return await this.productsService.getAll(offset, perPage, orderBy, order);
+    return await this.productsService.getAll(
+      offset,
+      perPage,
+      orderBy,
+      order,
+      searchByName,
+    );
   }
 
   @Query(returns => Product)

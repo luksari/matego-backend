@@ -23,16 +23,21 @@ export class ReviewsService {
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<ReviewsResponse> {
+  async getAll(
+    offset: number = 0,
+    limit: number = 15,
+    orderBy: string = 'id',
+    order: OrderEnum = OrderEnum.DESC,
+  ): Promise<ReviewsResponse> {
     const [items, total] = await this.reviewsRepository
-    .createQueryBuilder(Review.name)
-    .leftJoinAndSelect(`${Review.name}.product`, 'product')
-    .leftJoinAndSelect(`${Review.name}.author`, 'author')
-    .leftJoinAndSelect('product.type', 'type')
-    .orderBy(`${Review.name}.${orderBy}`, order)
-    .skip(offset)
-    .take(limit)
-    .getManyAndCount();
+      .createQueryBuilder(Review.name)
+      .leftJoinAndSelect(`${Review.name}.product`, 'product')
+      .leftJoinAndSelect(`${Review.name}.author`, 'author')
+      .leftJoinAndSelect('product.type', 'type')
+      .orderBy(`${Review.name}.${orderBy}`, order)
+      .skip(offset)
+      .take(limit)
+      .getManyAndCount();
 
     return { items, total };
   }
@@ -54,12 +59,15 @@ export class ReviewsService {
     if (!user) {
       throw new NotFoundException(ErrorMessages.UserNotFound);
     }
+
     const product = await this.productsRepository.findOne(
       addReviewInput.productId,
     );
+
     if (!product) {
       throw new NotFoundException(ErrorMessages.ProductNotFound);
     }
+
     const review = this.reviewsRepository.create({
       aroma: addReviewInput.aroma,
       bitterness: addReviewInput.bitterness,
@@ -71,12 +79,50 @@ export class ReviewsService {
       author: user,
       product,
     });
-    return await this.reviewsRepository.save(review);
+    await this.reviewsRepository.save(review);
+    review.product = await this.updateProductAverage(product.id);
+
+    return review;
   }
   async updateReview(reviewId: number, editReviewInput: EditReviewInput) {
     const review = await this.findById(reviewId);
     Object.assign(review, editReviewInput);
     await this.reviewsRepository.update(reviewId, review);
     return review;
+  }
+
+  private async updateProductAverage(productId: number) {
+    const product = await this.productsRepository.findOne(
+      productId,
+      {relations: ['reviews']},
+    );
+    let taste = 0;
+    let bitterness = 0;
+    let aroma = 0;
+    let energy = 0;
+    let price = 0;
+    let overall = 0;
+    
+    if (!product.reviews) { return }
+
+    const reviewsCount = product.reviews.length
+
+    product.reviews?.forEach(review => {
+        taste += review.taste;
+        bitterness += review.bitterness;
+        aroma += review.aroma;
+        energy += review.energy;
+        price += review.price;
+        overall += review.overall;
+    })
+
+    product.tasteAverage = taste / reviewsCount;
+    product.bitternessAverage = bitterness / reviewsCount;
+    product.aromaAverage = aroma / reviewsCount; 
+    product.energyAverage = energy / reviewsCount;
+    product.priceAverage = price / reviewsCount;
+    product.overallAverage = overall / reviewsCount;
+
+    return await this.productsRepository.save(product)
   }
 }
