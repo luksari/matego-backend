@@ -13,6 +13,7 @@ import { Type } from '../types/type.entity';
 import { ErrorMessages } from '../common/error.messages';
 import { ProductsResponse } from './products.response';
 import { OrderEnum } from '../common/enum';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -23,6 +24,8 @@ export class ProductsService {
     private readonly manufactuersRepository: Repository<Manufacturer>,
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
   ) {}
   async getAll(
     offset: number = 0,
@@ -30,6 +33,7 @@ export class ProductsService {
     orderBy: string = 'id',
     order: OrderEnum = OrderEnum.DESC,
     searchByName: string,
+    currentUser?: User,
   ): Promise<ProductsResponse> {
     let query = this.productsRepository
       .createQueryBuilder(Product.name)
@@ -44,7 +48,25 @@ export class ProductsService {
         name: `%${searchByName}%`,
       });
     }
+
     const [items, total] = await query.getManyAndCount();
+    if (currentUser) {
+      const user = await this.usersRepository.findOne(currentUser.id, {
+        relations: ['profile'],
+      });
+      const sortedItems: Product[] = [];
+      items.forEach(product => {
+        product.score =
+          user.profile.aromaImportance * product.aromaAverage +
+          user.profile.bitternessImportance * product.bitternessAverage +
+          user.profile.energyImportance * product.energyAverage +
+          user.profile.priceImportance * product.priceAverage +
+          user.profile.overallImportance * product.overallAverage;
+        sortedItems.push(product);
+      });
+      sortedItems.sort((p1, p2) => p1.score - p2.score);
+      return { items: sortedItems, total };
+    }
 
     return { items, total };
   }

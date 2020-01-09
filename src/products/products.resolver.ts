@@ -11,6 +11,8 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ProductsResponse } from './products.response';
 import { OrderEnum } from '../common/enum';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { User } from 'src/users/user.entity';
 
 @Resolver(Product)
 export class ProductsResolver {
@@ -25,6 +27,7 @@ export class ProductsResolver {
     order: OrderEnum,
     @Args({ name: 'searchByName', type: () => String, nullable: true })
     searchByName: string,
+    @CurrentUser() user?: User,
   ) {
     return await this.productsService.getAll(
       offset,
