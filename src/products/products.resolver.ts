@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
 import { Product } from './product.entity';
 import { ProductsService } from './products.service';
 import { AddProductInput } from './add.product.input';
@@ -27,8 +27,11 @@ export class ProductsResolver {
     order: OrderEnum,
     @Args({ name: 'searchByName', type: () => String, nullable: true })
     searchByName: string,
-    @CurrentUser() user?: User,
+    @CurrentUser() user: User,
+    @Context() context,
   ) {
+    console.log(context);
+    console.log(user);
     return await this.productsService.getAll(
       offset,
       perPage,
