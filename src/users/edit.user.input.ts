@@ -7,7 +7,7 @@ export class EditUserInput {
   country: string;
 
   @Field({ nullable: true })
-  photoUrl?: string;
+  avatarUrl?: string;
 
   @IsOptional()
   @Min(1)
