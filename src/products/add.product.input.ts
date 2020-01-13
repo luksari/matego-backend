@@ -8,8 +8,8 @@ export class AddProductInput {
   typeId: number;
   @Field()
   name: string;
-  @Field()
-  details: string;
+  @Field({ nullable: true })
+  details?: string;
   @Field({ nullable: true })
   photoUrl?: string;
 }

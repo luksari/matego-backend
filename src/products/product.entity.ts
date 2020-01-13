@@ -10,6 +10,7 @@ import { ObjectType, Field, ID, Int, Float } from 'type-graphql';
 import { Type } from '../types/type.entity';
 import { Manufacturer } from '../manufacturers/manufacturer.entity';
 import { Review } from '../reviews/review.entity';
+import { User } from '../users/user.entity';
 
 @ObjectType()
 @Entity({ name: 'products' })
@@ -31,6 +32,9 @@ export class Product {
   @OneToMany(type => Review, review => review.product)
   @Field(type => [Review], { nullable: true })
   reviews?: Review[];
+
+  @ManyToOne(type => User, user => user.products)
+  addedBy: User;
 
   @Column({ name: 'product_name', nullable: false })
   @Field()
@@ -99,4 +103,7 @@ export class Product {
   })
   @Field()
   createdAt: string;
+
+  @Field({ nullable: true })
+  personalizedScore?: number | undefined;
 }

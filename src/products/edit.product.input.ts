@@ -8,4 +8,8 @@ export class EditProductInput {
   details?: string;
   @Field({ nullable: true })
   photoUrl?: string;
+  @Field(type => ID, { nullable: true })
+  typeId?: number;
+  @Field(type => ID, { nullable: true })
+  manufacturerId?: number;
 }

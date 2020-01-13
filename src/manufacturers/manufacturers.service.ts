@@ -54,18 +54,18 @@ export class ManufacturersService {
       return false;
     }
   }
-  async createManufacturer(addManufacturerInput: AddManufacturerInput) {
-    const user = await this.usersRepository.findOne(
-      addManufacturerInput.creatorId,
-    );
-    if (!user) {
+  async createManufacturer(
+    addManufacturerInput: AddManufacturerInput,
+    addedBy: User,
+  ) {
+    if (!addedBy) {
       throw new NotFoundException(ErrorMessages.UserNotFound);
     }
     const manufactuer = this.manufacturersRepository.create({
       name: addManufacturerInput.name,
       country: addManufacturerInput.country,
       photoUrl: addManufacturerInput.photoUrl,
-      addedBy: user,
+      addedBy,
     });
     return this.manufacturersRepository.save(manufactuer);
   }

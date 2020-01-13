@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
 import { Product } from './product.entity';
 import { ProductsService } from './products.service';
 import { AddProductInput } from './add.product.input';
@@ -11,6 +11,8 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ProductsResponse } from './products.response';
 import { OrderEnum } from '../common/enum';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { User } from '../users/user.entity';
 
 @Resolver(Product)
 export class ProductsResolver {
@@ -25,6 +27,8 @@ export class ProductsResolver {
     order: OrderEnum,
     @Args({ name: 'searchByName', type: () => String, nullable: true })
     searchByName: string,
+    @Args({ name: 'personalizeForUser', type: () => ID, nullable: true })
+    personalizeForUser: number,
   ) {
     return await this.productsService.getAll(
       offset,
@@ -32,6 +36,7 @@ export class ProductsResolver {
       orderBy,
       order,
       searchByName,
+      personalizeForUser,
     );
   }
 
@@ -45,18 +50,22 @@ export class ProductsResolver {
   @Mutation(returns => Product)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin, UserRoles.user)
-  async addProduct(@Args('product') product: AddProductInput) {
-    return await this.productsService.createProduct(product);
+  async addProduct(
+    @Args('product') product: AddProductInput,
+    @CurrentUser() user: User,
+  ) {
+    return await this.productsService.createProduct(product, user);
   }
 
   @Mutation(returns => Product)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
-  @Roles(UserRoles.admin)
+  @Roles(UserRoles.admin, UserRoles.user)
   async editProduct(
     @Args({ name: 'productId', type: () => ID }) productId: number,
     @Args('product') product: EditProductInput,
+    @CurrentUser() user: User,
   ) {
-    return await this.productsService.editProduct(productId, product);
+    return await this.productsService.editProduct(productId, product, user);
   }
 
   @Mutation(returns => Boolean)

@@ -10,7 +10,4 @@ export class AddManufacturerInput {
 
   @Field({ nullable: true })
   photoUrl?: string;
-
-  @Field(type => ID)
-  creatorId: number;
 }

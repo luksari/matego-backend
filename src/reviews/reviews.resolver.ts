@@ -5,13 +5,15 @@ import { Ctx, buildSchema, ID, Int } from 'type-graphql';
 import { Context } from 'apollo-server-core';
 import { NotFoundException, UseGuards } from '@nestjs/common';
 import { AddReviewInput } from './add.review.input';
-import { EditReviewInput } from './update.review.input';
+import { EditReviewInput } from './edit.review.input';
 import { GqlAuthGuard } from '../auth/guards/gql.auth.guard';
 import { GqlRolesGuard } from '../auth/guards/gql.roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ReviewsResponse } from './reviews.response';
 import { OrderEnum } from '../common/enum';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { User } from '../users/user.entity';
 
 @Resolver(Review)
 export class ReviewsResolver {
@@ -33,8 +35,10 @@ export class ReviewsResolver {
   async reviews(
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
-    @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
-    @Args({ name: 'order', type: () => String, nullable: true }) order: OrderEnum,
+    @Args({ name: 'orderBy', type: () => String, nullable: true })
+    orderBy: string,
+    @Args({ name: 'order', type: () => String, nullable: true })
+    order: OrderEnum,
   ) {
     return await this.reviewService.getAll(offset, perPage, orderBy, order);
   }
@@ -42,8 +46,11 @@ export class ReviewsResolver {
   @Mutation(returns => Review)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin, UserRoles.user)
-  async addReview(@Args('review') review?: AddReviewInput) {
-    return this.reviewService.createReview(review);
+  async addReview(
+    @Args('review') review: AddReviewInput,
+    @CurrentUser() user: User,
+  ) {
+    return this.reviewService.createReview(review, user);
   }
 
   @Mutation(returns => Review)
@@ -51,9 +58,10 @@ export class ReviewsResolver {
   @Roles(UserRoles.admin, UserRoles.user)
   async editReview(
     @Args({ name: 'reviewId', type: () => ID }) reviewId: number,
-    @Args('review') review?: EditReviewInput,
+    @Args('review') review: EditReviewInput,
+    @CurrentUser() user: User,
   ) {
-    return await this.reviewService.updateReview(reviewId, review);
+    return await this.reviewService.updateReview(reviewId, review, user);
   }
 
   @Mutation(returns => Boolean)
