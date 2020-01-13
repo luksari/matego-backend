@@ -67,7 +67,7 @@ export class ManufacturersService {
       photoUrl: addManufacturerInput.photoUrl,
       addedBy,
     });
-    return this.manufacturersRepository.save(manufactuer);
+    return await this.manufacturersRepository.save(manufactuer);
   }
   async updateManufacturer(
     id: number,
