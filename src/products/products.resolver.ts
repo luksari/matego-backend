@@ -11,8 +11,8 @@ import { Roles } from '../decorators/roles.decorator';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { ProductsResponse } from './products.response';
 import { OrderEnum } from '../common/enum';
-import { CurrentUser } from 'src/decorators/current-user.decorator';
-import { User } from 'src/users/user.entity';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { User } from '../users/user.entity';
 
 @Resolver(Product)
 export class ProductsResolver {
@@ -27,17 +27,16 @@ export class ProductsResolver {
     order: OrderEnum,
     @Args({ name: 'searchByName', type: () => String, nullable: true })
     searchByName: string,
-    @CurrentUser() user: User,
-    @Context() context,
+    @Args({ name: 'personalizeForUser', type: () => ID, nullable: true })
+    personalizeForUser: number,
   ) {
-    console.log(context);
-    console.log(user);
     return await this.productsService.getAll(
       offset,
       perPage,
       orderBy,
       order,
       searchByName,
+      personalizeForUser,
     );
   }
 
@@ -51,18 +50,22 @@ export class ProductsResolver {
   @Mutation(returns => Product)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin, UserRoles.user)
-  async addProduct(@Args('product') product: AddProductInput) {
-    return await this.productsService.createProduct(product);
+  async addProduct(
+    @Args('product') product: AddProductInput,
+    @CurrentUser() user: User,
+  ) {
+    return await this.productsService.createProduct(product, user);
   }
 
   @Mutation(returns => Product)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
-  @Roles(UserRoles.admin)
+  @Roles(UserRoles.admin, UserRoles.user)
   async editProduct(
     @Args({ name: 'productId', type: () => ID }) productId: number,
     @Args('product') product: EditProductInput,
+    @CurrentUser() user: User,
   ) {
-    return await this.productsService.editProduct(productId, product);
+    return await this.productsService.editProduct(productId, product, user);
   }
 
   @Mutation(returns => Boolean)

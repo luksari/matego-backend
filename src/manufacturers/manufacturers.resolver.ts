@@ -12,6 +12,8 @@ import { ID, Arg, Int } from 'type-graphql';
 import { ErrorMessages } from '../common/error.messages';
 import { ManufacturersResponse } from './manufacturers.response';
 import { OrderEnum } from '../common/enum';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { User } from '../users/user.entity';
 
 @Resolver(Manufacturer)
 export class ManufacturersResolver {
@@ -53,8 +55,12 @@ export class ManufacturersResolver {
   @Roles(UserRoles.admin, UserRoles.user)
   async addManufacturer(
     @Args('manufacturer') manufacturer: AddManufacturerInput,
+    @CurrentUser() user: User,
   ) {
-    return await this.manufacturersService.createManufacturer(manufacturer);
+    return await this.manufacturersService.createManufacturer(
+      manufacturer,
+      user,
+    );
   }
   @Mutation(returns => Manufacturer)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)

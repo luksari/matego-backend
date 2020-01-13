@@ -10,6 +10,7 @@ import { Profile } from './profile.entity';
 import { Review } from '../reviews/review.entity';
 import { ObjectType, Field, ID } from 'type-graphql';
 import { UserRoles } from '../auth/guards/roles/user.roles';
+import { Product } from '../products/product.entity';
 
 @Entity({ name: 'accounts' })
 @ObjectType()
@@ -49,6 +50,10 @@ export class User {
   @OneToMany(type => Review, review => review.author)
   @Field(type => [Review], { nullable: true })
   reviews?: Review[];
+
+  @OneToMany(type => Product, product => product.addedBy)
+  @Field(type => [Product], { nullable: true })
+  products?: Product[];
 
   @Column('timestamp with time zone', {
     nullable: false,

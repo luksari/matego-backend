@@ -19,25 +19,35 @@ export class UsersService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<UsersResponse> {
-    
+  async getAll(
+    offset: number = 0,
+    limit: number = 15,
+    orderBy: string = 'id',
+    order: OrderEnum = OrderEnum.DESC,
+  ): Promise<UsersResponse> {
     const [items, total] = await this.usersRepository
-    .createQueryBuilder(User.name)
-    .leftJoinAndSelect(`${User.name}.profile`, 'profile')
-    .leftJoinAndSelect(`profile.rank`, 'rank')
-    .leftJoinAndSelect(`${User.name}.reviews`, 'reviews')
-    .leftJoinAndSelect(`reviews.product`, 'products')
-    .orderBy(`${User.name}.${orderBy}`, order)
-    .skip(offset)
-    .take(limit)
-    .getManyAndCount();
+      .createQueryBuilder(User.name)
+      .leftJoinAndSelect(`${User.name}.profile`, 'profile')
+      .leftJoinAndSelect(`profile.rank`, 'rank')
+      .leftJoinAndSelect(`${User.name}.reviews`, 'reviews')
+      .leftJoinAndSelect(`reviews.product`, 'products')
+      .orderBy(`${User.name}.${orderBy}`, order)
+      .skip(offset)
+      .take(limit)
+      .getManyAndCount();
 
     return { items, total };
   }
 
   async findById(id: number) {
     return await this.usersRepository.findOne(id, {
-      relations: ['reviews', 'profile', 'profile.rank', 'reviews.product'],
+      relations: [
+        'reviews',
+        'profile',
+        'profile.rank',
+        'reviews.product',
+        'products',
+      ],
     });
   }
 

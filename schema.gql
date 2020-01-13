@@ -7,14 +7,13 @@ input AddManufacturerInput {
   name: String!
   country: String!
   photoUrl: String
-  creatorId: ID!
 }
 
 input AddProductInput {
   manufacturerId: ID!
   typeId: ID!
   name: String!
-  details: String!
+  details: String
   photoUrl: String
 }
 
@@ -25,14 +24,13 @@ input AddRankInput {
 }
 
 input AddReviewInput {
-  aroma: Int
-  taste: Int
-  bitterness: Int
-  energy: Int
-  price: Int
-  overall: Int
-  description: String!
-  authorId: ID!
+  aroma: Int!
+  taste: Int!
+  bitterness: Int!
+  energy: Int!
+  price: Int!
+  overall: Int!
+  description: String
   productId: ID!
 }
 
@@ -50,6 +48,8 @@ input EditProductInput {
   name: String
   details: String
   photoUrl: String
+  typeId: ID
+  manufacturerId: ID
 }
 
 input EditRankInput {
@@ -65,7 +65,7 @@ input EditReviewInput {
   energy: Int
   price: Int
   overall: Int
-  description: String!
+  description: String
 }
 
 input EditTypeInput {
@@ -135,6 +135,7 @@ type Product {
   priceAverage: Float!
   overallAverage: Float!
   createdAt: String!
+  personalizedScore: Float
 }
 
 type ProductsResponse {
@@ -170,7 +171,7 @@ type Query {
   reviews(order: String, orderBy: String, perPage: Int, offset: Int): ReviewsResponse!
   types(order: String, orderBy: String, perPage: Int, offset: Int): TypesResponse!
   type(typeId: ID!): ProductType!
-  products(searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ProductsResponse!
+  products(personalizeForUser: ID, searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ProductsResponse!
   product(productId: ID!): Product!
   manufacturers(searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ManufacturersResponse!
   manufacturer(manufacturerId: ID!): Manufacturer!
@@ -199,7 +200,7 @@ type Review {
   energy: Int!
   price: Int!
   overall: Int!
-  description: String!
+  description: String
   product: Product!
   author: User!
   editedAt: String!
@@ -225,6 +226,7 @@ type User {
   avatarUrl: String
   role: String!
   reviews: [Review!]
+  products: [Product!]
   createdAt: String!
 }
 

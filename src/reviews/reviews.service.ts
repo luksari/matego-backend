@@ -2,17 +2,19 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from './review.entity';
 import { Repository, DeleteResult } from 'typeorm';
 import { AddReviewInput } from './add.review.input';
-import { EditReviewInput } from './update.review.input';
+import { EditReviewInput } from './edit.review.input';
 import { User } from '../users/user.entity';
 import { Product } from '../products/product.entity';
 import { ErrorMessages } from '../common/error.messages';
 import { ReviewsResponse } from './reviews.response';
 import { OrderEnum } from '../common/enum';
+import { UserRoles } from '../auth/guards/roles/user.roles';
 
 @Injectable()
 export class ReviewsService {
@@ -54,9 +56,8 @@ export class ReviewsService {
       return false;
     }
   }
-  async createReview(addReviewInput: AddReviewInput) {
-    const user = await this.usersRepository.findOne(addReviewInput.authorId);
-    if (!user) {
+  async createReview(addReviewInput: AddReviewInput, author: User) {
+    if (!author) {
       throw new NotFoundException(ErrorMessages.UserNotFound);
     }
 
@@ -76,7 +77,7 @@ export class ReviewsService {
       energy: addReviewInput.energy,
       overall: addReviewInput.overall,
       description: addReviewInput.description,
-      author: user,
+      author,
       product,
     });
     await this.reviewsRepository.save(review);
@@ -84,10 +85,18 @@ export class ReviewsService {
 
     return review;
   }
-  async updateReview(reviewId: number, editReviewInput: EditReviewInput) {
+  async updateReview(reviewId: number, editReviewInput: EditReviewInput, author: User) {
     const review = await this.findById(reviewId);
+
+    if(author.role === UserRoles.user && author.id !== review.author.id) {
+      throw new UnauthorizedException();
+    }
+
     Object.assign(review, editReviewInput);
-    await this.reviewsRepository.update(reviewId, review);
+    await this.reviewsRepository.save(review);
+
+    review.product = await this.updateProductAverage(review.product.id);
+
     return review;
   }
 
