@@ -82,11 +82,9 @@ export class UsersService {
     });
     const profile = await this.profileRepository.findOne(user.profile.id);
     Object.assign(profile, editUserInput);
-    await this.profileRepository.update(user.profile.id, profile);
-    user.profile = profile;
-    user.avatarUrl = editUserInput.photoUrl;
-    user.country = editUserInput.country;
-    await this.usersRepository.update(userId, user);
+    await this.profileRepository.save(profile);
+    Object.assign(user, editUserInput);
+    await this.usersRepository.save(user);
     return user;
   }
 
