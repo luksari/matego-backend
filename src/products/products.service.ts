@@ -45,9 +45,18 @@ export class ProductsService {
       .leftJoinAndSelect(`${Product.name}.reviews`, 'reviews')
       .orderBy(`${Product.name}.${orderBy}`, order);
 
+    let user: User;
     if (!userId) {
       query = query.skip(offset).take(limit);
+    } else {
+      user = await this.usersRepository.findOne(userId, {
+        relations: ['profile'],
+      });
+      if (!user) {
+        query = query.skip(offset).take(limit);
+      }
     }
+
     if (searchByName) {
       query = query.where(`${Product.name}.name ilike :name`, {
         name: `%${searchByName}%`,
@@ -56,11 +65,7 @@ export class ProductsService {
 
     const [items, total] = await query.getManyAndCount();
 
-    if (userId) {
-      const user = await this.usersRepository.findOne(userId, {
-        relations: ['profile'],
-      });
-
+    if (user) {
       const sortedItems: Product[] = [];
       items.forEach(product => {
         product.personalizedScore =
