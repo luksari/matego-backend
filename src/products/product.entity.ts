@@ -34,6 +34,7 @@ export class Product {
   reviews?: Review[];
 
   @ManyToOne(type => User, user => user.products)
+  @Field(type => User, { name: 'author', nullable: true })
   addedBy: User;
 
   @Column({ name: 'product_name', nullable: false })
