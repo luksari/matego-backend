@@ -40,6 +40,7 @@ export class ProductsService {
     let query = this.productsRepository
       .createQueryBuilder(Product.name)
       .leftJoinAndSelect(`${Product.name}.manufacturer`, 'manufacturer')
+      .leftJoinAndSelect(`${Product.name}.addedBy`, 'addedBy')
       .leftJoinAndSelect(`${Product.name}.type`, 'type')
       .leftJoinAndSelect(`${Product.name}.reviews`, 'reviews')
       .orderBy(`${Product.name}.${orderBy}`, order);
@@ -79,7 +80,7 @@ export class ProductsService {
 
   async findById(id: number) {
     return this.productsRepository.findOne(id, {
-      relations: ['manufacturer', 'type', 'reviews'],
+      relations: ['manufacturer', 'type', 'reviews', 'addedBy'],
     });
   }
 

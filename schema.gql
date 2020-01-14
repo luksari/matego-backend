@@ -125,6 +125,7 @@ type Product {
   manufacturer: Manufacturer!
   type: ProductType!
   reviews: [Review!]
+  author: User
   name: String!
   details: String!
   photoUrl: String
