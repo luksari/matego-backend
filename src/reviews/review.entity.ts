@@ -45,15 +45,20 @@ export class Review {
   @Field({ nullable: true })
   description?: string;
 
-  @ManyToOne(type => Product, product => product.reviews)
+  @ManyToOne(type => Product, product => product.reviews, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'review_product_id' })
   @Field(type => Product)
   product: Product;
 
-  @ManyToOne(type => User, user => user.reviews)
+  @ManyToOne(type => User, user => user.reviews, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
   @JoinColumn({ name: 'review_author_id' })
-  @Field(type => User)
-  author: User;
+  @Field(type => User, { nullable: true })
+  author?: User;
 
   @Column('timestamp with time zone', {
     nullable: false,

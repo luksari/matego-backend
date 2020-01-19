@@ -30,6 +30,9 @@ import { UploadService } from './upload/upload.service';
       engine: {
         apiKey: process.env.ENGINE_API_KEY,
       },
+      cacheControl: {
+        defaultMaxAge: 45,
+      },
       include: [
         UsersModule,
         ProductsModule,

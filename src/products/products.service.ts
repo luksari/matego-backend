@@ -16,6 +16,7 @@ import { ProductsResponse } from './products.response';
 import { OrderEnum } from '../common/enum';
 import { User } from '../users/user.entity';
 import { UserRoles } from '../auth/guards/roles/user.roles';
+import { PersonalizedProductsInput } from './personalized.products.input';
 
 @Injectable()
 export class ProductsService {
@@ -36,6 +37,7 @@ export class ProductsService {
     order: OrderEnum = OrderEnum.DESC,
     searchByName: string,
     userId: number,
+    personalizedInput?: PersonalizedProductsInput,
   ): Promise<ProductsResponse> {
     let query = this.productsRepository
       .createQueryBuilder(Product.name)
@@ -46,15 +48,14 @@ export class ProductsService {
       .orderBy(`${Product.name}.${orderBy}`, order);
 
     let user: User;
-    if (!userId) {
-      query = query.skip(offset).take(limit);
-    } else {
+    if (userId) {
       user = await this.usersRepository.findOne(userId, {
         relations: ['profile'],
       });
-      if (!user) {
-        query = query.skip(offset).take(limit);
-      }
+    }
+
+    if (!userId || !user || !personalizedInput.aroma) {
+      query = query.skip(offset).take(limit);
     }
 
     if (searchByName) {
@@ -65,18 +66,29 @@ export class ProductsService {
 
     const [items, total] = await query.getManyAndCount();
 
-    if (user) {
-      const sortedItems: Product[] = [];
-      items.forEach(product => {
-        product.personalizedScore =
-          user.profile.aromaImportance * product.aromaAverage +
-          user.profile.bitternessImportance * product.bitternessAverage +
-          user.profile.energyImportance * product.energyAverage +
-          user.profile.priceImportance * product.priceAverage +
-          user.profile.overallImportance * product.overallAverage;
-        sortedItems.push(product);
-      });
-      sortedItems.sort((p1, p2) => p2.personalizedScore - p1.personalizedScore);
+    if (user || personalizedInput.aroma) {
+      let sortedItems: Product[] = [];
+      if (user && !personalizedInput.aroma) {
+        sortedItems = this.personalizeProducts(
+          items,
+          user.profile.aromaImportance,
+          user.profile.bitternessImportance,
+          user.profile.tasteImportance,
+          user.profile.energyImportance,
+          user.profile.priceImportance,
+          user.profile.overallImportance,
+        );
+      } else if (personalizedInput.aroma) {
+        sortedItems = this.personalizeProducts(
+          items,
+          personalizedInput.aroma,
+          personalizedInput.bitterness,
+          personalizedInput.taste,
+          personalizedInput.energy,
+          personalizedInput.price,
+          personalizedInput.overall,
+        );
+      }
       return { items: sortedItems.slice(offset, offset + limit), total };
     }
 
@@ -146,10 +158,55 @@ export class ProductsService {
 
   async deleteProduct(id: number) {
     try {
-      await this.productsRepository.delete(id);
-      return true;
-    } catch {
-      return false;
+      const result = await this.productsRepository.delete(id);
+      return result.affected > 0;
+    } catch (error) {
+      throw new NotFoundException('DeleteError', error);
     }
+  }
+
+  private calculateScore(
+    product: Product,
+    aroma: number,
+    bitterness: number,
+    taste: number,
+    energy: number,
+    price: number,
+    overall: number,
+  ) {
+    return (
+      aroma * product.aromaAverage +
+      bitterness * product.bitternessAverage +
+      taste * product.tasteAverage +
+      energy * product.energyAverage +
+      price * product.priceAverage +
+      overall * product.overallAverage
+    );
+  }
+
+  private personalizeProducts(
+    products: Product[],
+    aroma: number,
+    bitterness: number,
+    taste: number,
+    energy: number,
+    price: number,
+    overall: number,
+  ) {
+    const sortedItems: Product[] = [];
+    products.forEach(product => {
+      product.personalizedScore = this.calculateScore(
+        product,
+        aroma,
+        bitterness,
+        taste,
+        energy,
+        price,
+        overall,
+      );
+      sortedItems.push(product);
+    });
+    sortedItems.sort((p1, p2) => p2.personalizedScore - p1.personalizedScore);
+    return sortedItems;
   }
 }

@@ -120,14 +120,23 @@ type Mutation {
   deleteRank(rankId: ID!): Boolean!
 }
 
+input PersonalizedProductsInput {
+  aroma: Int = 1
+  taste: Int = 1
+  bitterness: Int = 1
+  energy: Int = 1
+  price: Int = 1
+  overall: Int = 1
+}
+
 type Product {
   id: ID!
   manufacturer: Manufacturer!
-  type: ProductType!
+  type: ProductType
   reviews: [Review!]
   author: User
   name: String!
-  details: String!
+  details: String
   photoUrl: String
   aromaAverage: Float!
   tasteAverage: Float!
@@ -172,7 +181,7 @@ type Query {
   reviews(order: String, orderBy: String, perPage: Int, offset: Int): ReviewsResponse!
   types(order: String, orderBy: String, perPage: Int, offset: Int): TypesResponse!
   type(typeId: ID!): ProductType!
-  products(personalizeForUser: ID, searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ProductsResponse!
+  products(personalizeBy: PersonalizedProductsInput, personalizeForUser: ID, searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ProductsResponse!
   product(productId: ID!): Product!
   manufacturers(searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ManufacturersResponse!
   manufacturer(manufacturerId: ID!): Manufacturer!
@@ -203,7 +212,7 @@ type Review {
   overall: Int!
   description: String
   product: Product!
-  author: User!
+  author: User
   editedAt: String!
   createdAt: String!
 }
