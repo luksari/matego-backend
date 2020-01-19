@@ -90,10 +90,10 @@ export class UsersService {
 
   async deleteUser(userId: number) {
     try {
-      await this.usersRepository.delete(userId);
-      return true;
+      const result = await this.usersRepository.delete(userId);
+      return result.affected > 0;
     } catch (error) {
-      return false;
+      throw new NotFoundException('DeleteError', error);
     }
   }
 

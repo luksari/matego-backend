@@ -51,9 +51,9 @@ export class ReviewsService {
   async deleteReview(id: number): Promise<boolean> {
     try {
       const result: DeleteResult = await this.reviewsRepository.delete(id);
-      return true;
-    } catch {
-      return false;
+      return result.affected > 0;
+    } catch (error) {
+      throw new NotFoundException('DeleteError', error);
     }
   }
   async createReview(addReviewInput: AddReviewInput, author: User) {

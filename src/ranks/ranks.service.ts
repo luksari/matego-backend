@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Rank } from './rank.entity';
 import { Repository } from 'typeorm';
@@ -14,14 +14,19 @@ export class RanksService {
     private readonly ranksRepository: Repository<Rank>,
   ) {}
 
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<RanksResponse> {
+  async getAll(
+    offset: number = 0,
+    limit: number = 15,
+    orderBy: string = 'id',
+    order: OrderEnum = OrderEnum.DESC,
+  ): Promise<RanksResponse> {
     const [items, total] = await this.ranksRepository
-    .createQueryBuilder(Rank.name)
-    .orderBy(`${Rank.name}.${orderBy}`, order)
-    .skip(offset)
-    .take(limit)
-    .getManyAndCount();
-    return { items, total }
+      .createQueryBuilder(Rank.name)
+      .orderBy(`${Rank.name}.${orderBy}`, order)
+      .skip(offset)
+      .take(limit)
+      .getManyAndCount();
+    return { items, total };
   }
   async findById(id: number) {
     return await this.ranksRepository.findOne(id);
@@ -38,10 +43,10 @@ export class RanksService {
   }
   async deleteRank(id: number) {
     try {
-      await this.ranksRepository.delete(id);
-      return true;
+      const result = await this.ranksRepository.delete(id);
+      return result.affected > 0;
     } catch (error) {
-      return false;
+      throw new NotFoundException('DeleteError', error);
     }
   }
 }

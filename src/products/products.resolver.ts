@@ -13,6 +13,7 @@ import { ProductsResponse } from './products.response';
 import { OrderEnum } from '../common/enum';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { User } from '../users/user.entity';
+import { PersonalizedProductsInput } from './personalized.products.input';
 
 @Resolver(Product)
 export class ProductsResolver {
@@ -29,6 +30,12 @@ export class ProductsResolver {
     searchByName: string,
     @Args({ name: 'personalizeForUser', type: () => ID, nullable: true })
     personalizeForUser: number,
+    @Args({
+      name: 'personalizeBy',
+      type: () => PersonalizedProductsInput,
+      nullable: true,
+    })
+    personalizeBy?: PersonalizedProductsInput,
   ) {
     return await this.productsService.getAll(
       offset,
@@ -37,6 +44,7 @@ export class ProductsResolver {
       order,
       searchByName,
       personalizeForUser,
+      personalizeBy,
     );
   }
 

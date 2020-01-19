@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Type } from './type.entity';
 import { Repository } from 'typeorm';
@@ -13,14 +13,19 @@ export class TypesService {
     @InjectRepository(Type)
     private readonly typesRepository: Repository<Type>,
   ) {}
-  async getAll(offset: number = 0, limit: number = 15, orderBy: string = 'id', order: OrderEnum = OrderEnum.DESC): Promise<TypesResponse> {
+  async getAll(
+    offset: number = 0,
+    limit: number = 15,
+    orderBy: string = 'id',
+    order: OrderEnum = OrderEnum.DESC,
+  ): Promise<TypesResponse> {
     const [items, total] = await this.typesRepository
-    .createQueryBuilder(Type.name)
-    .orderBy(`${Type.name}.${orderBy}`, order)
-    .skip(offset)
-    .take(limit)
-    .getManyAndCount();;
-    return { items, total }
+      .createQueryBuilder(Type.name)
+      .orderBy(`${Type.name}.${orderBy}`, order)
+      .skip(offset)
+      .take(limit)
+      .getManyAndCount();
+    return { items, total };
   }
   async findById(id: number) {
     return await this.typesRepository.findOne(id);
@@ -35,10 +40,10 @@ export class TypesService {
   }
   async deleteType(id: number) {
     try {
-      await this.typesRepository.delete(id);
-      return true;
+      const result = await this.typesRepository.delete(id);
+      return result.affected > 0;
     } catch (error) {
-      return false;
+      throw new NotFoundException('DeleteError', error);
     }
   }
 }
