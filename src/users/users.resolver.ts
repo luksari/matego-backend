@@ -41,8 +41,10 @@ export class UsersResolver {
   async users(
     @Args({ name: 'offset', type: () => Int, nullable: true }) offset: number,
     @Args({ name: 'perPage', type: () => Int, nullable: true }) perPage: number,
-    @Args({ name: 'orderBy', type: () => String, nullable: true }) orderBy: string,
-    @Args({ name: 'order', type: () => String, nullable: true }) order: OrderEnum,
+    @Args({ name: 'orderBy', type: () => String, nullable: true })
+    orderBy: string,
+    @Args({ name: 'order', type: () => String, nullable: true })
+    order: OrderEnum,
   ) {
     return await this.usersService.getAll(offset, perPage, orderBy, order);
   }
@@ -66,14 +68,20 @@ export class UsersResolver {
   @Mutation(returns => User)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
-  async revokeAdmin(@Args({ name: 'userId', type: () => ID }) userId: number) {
-    return await this.usersService.revokeAdmin(userId);
+  async revokeAdmin(
+    @Args({ name: 'userId', type: () => ID }) userId: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return await this.usersService.revokeAdmin(userId, currentUser);
   }
 
   @Mutation(returns => Boolean)
   @UseGuards(GqlAuthGuard, GqlRolesGuard)
   @Roles(UserRoles.admin)
-  async deleteUser(@Args({ name: 'userId', type: () => ID }) userId: number) {
-    return await this.usersService.deleteUser(userId);
+  async deleteUser(
+    @Args({ name: 'userId', type: () => ID }) userId: number,
+    @CurrentUser() currentUser: User,
+  ) {
+    return await this.usersService.deleteUser(userId, currentUser);
   }
 }

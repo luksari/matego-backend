@@ -19,31 +19,37 @@ export class Product {
   @Field(type => ID)
   id: number;
 
-  @ManyToOne(type => Manufacturer, manufacturer => manufacturer.products)
+  @ManyToOne(type => Manufacturer, manufacturer => manufacturer.products, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'product_manufacturer_id' })
   @Field(type => Manufacturer)
   manufacturer: Manufacturer;
 
-  @ManyToOne(type => Type)
+  @ManyToOne(type => Type, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'product_type_id' })
-  @Field(type => Type)
-  type: Type;
+  @Field(type => Type, { nullable: true })
+  type?: Type;
 
   @OneToMany(type => Review, review => review.product)
   @Field(type => [Review], { nullable: true })
   reviews?: Review[];
 
-  @ManyToOne(type => User, user => user.products)
+  @ManyToOne(type => User, user => user.products, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'product_added_by_id' })
   @Field(type => User, { name: 'author', nullable: true })
-  addedBy: User;
+  addedBy?: User;
 
   @Column({ name: 'product_name', nullable: false })
   @Field()
   name: string;
 
-  @Column({ name: 'product_details', nullable: false })
-  @Field()
-  details: string;
+  @Column({ name: 'product_details', nullable: true })
+  @Field({ nullable: true })
+  details?: string;
 
   @Column({ name: 'product_photo_url', nullable: true })
   @Field({ nullable: true })

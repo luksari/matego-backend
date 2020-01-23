@@ -34,7 +34,9 @@ export class Manufacturer {
   @Field({ nullable: true })
   photoUrl?: string;
 
-  @OneToMany(type => Product, product => product.manufacturer)
+  @OneToMany(type => Product, product => product.manufacturer, {
+    onDelete: 'CASCADE',
+  })
   @Field(type => [Product], { nullable: true })
   products?: Product[];
 

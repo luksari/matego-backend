@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -88,12 +92,15 @@ export class UsersService {
     return user;
   }
 
-  async deleteUser(userId: number) {
+  async deleteUser(userId: number, currentUser: User) {
+    if (userId === currentUser.id) {
+      throw new BadRequestException('WrongUserId');
+    }
     try {
-      await this.usersRepository.delete(userId);
-      return true;
+      const result = await this.usersRepository.delete(userId);
+      return result.affected > 0;
     } catch (error) {
-      return false;
+      throw new NotFoundException('DeleteError', error);
     }
   }
 
@@ -110,7 +117,11 @@ export class UsersService {
     return user;
   }
 
-  async revokeAdmin(userId: number) {
+  async revokeAdmin(userId: number, currentUser: User) {
+    if (userId === currentUser.id) {
+      throw new BadRequestException('WrongUserId');
+    }
+
     const user = await this.findById(userId);
     if (!user) {
       throw new NotFoundException(ErrorMessages.UserNotFound);
