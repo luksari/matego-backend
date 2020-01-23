@@ -17,9 +17,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     echo "export JWT_SECRET_KEY=$JWT_SECRET_KEY"
     echo "export POSTGRES_PORT=5432"
     echo "export POSTGRES_HOST=postgres"
-    docker-compose pull
-    docker-compose stop
-    docker-compose rm -f
-    docker-compose up -d
+    docker-compose pull && docker-compose stop && docker-compose rm -f && docker-compose up -d
 EOF
 )

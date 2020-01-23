@@ -7,5 +7,6 @@ RUN yarn
 COPY tsconfig.json .
 COPY tsconfig.build.json .
 COPY src src/
-EXPOSE 3000
-CMD ["yarn", "start:dev"]
+RUN yarn build
+EXPOSE 4000
+CMD ["yarn", "start:prod"]
