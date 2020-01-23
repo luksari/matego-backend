@@ -51,8 +51,10 @@ export class ProductsResolver {
   @Query(returns => Product)
   async product(
     @Args({ name: 'productId', type: () => ID }) productId: number,
+    @Args({ name: 'personalizeFor', type: () => ID, nullable: true })
+    userId: number,
   ) {
-    return await this.productsService.findById(productId);
+    return await this.productsService.findById(productId, userId);
   }
 
   @Mutation(returns => Product)

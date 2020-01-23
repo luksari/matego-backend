@@ -54,7 +54,7 @@ export class ProductsService {
       });
     }
 
-    if (!userId || !user || !personalizedInput.aroma) {
+    if (!user && !personalizedInput.aroma) {
       query = query.skip(offset).take(limit);
     }
 
@@ -95,8 +95,27 @@ export class ProductsService {
     return { items, total };
   }
 
-  async findById(id: number) {
-    return this.productsRepository.findOne(id, {
+  async findById(id: number, userId: number) {
+    if (userId) {
+      const user = await this.usersRepository.findOne(userId, {
+        relations: ['profile'],
+      });
+      const product = await this.productsRepository.findOne(id, {
+        relations: ['manufacturer', 'type', 'reviews', 'addedBy'],
+      });
+      product.personalizedScore = this.calculateScore(
+        product,
+        user.profile.aromaImportance,
+        user.profile.bitternessImportance,
+        user.profile.tasteImportance,
+        user.profile.energyImportance,
+        user.profile.priceImportance,
+        user.profile.overallImportance,
+      );
+      return product;
+    }
+
+    return await this.productsRepository.findOne(id, {
       relations: ['manufacturer', 'type', 'reviews', 'addedBy'],
     });
   }

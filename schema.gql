@@ -182,7 +182,7 @@ type Query {
   types(order: String, orderBy: String, perPage: Int, offset: Int): TypesResponse!
   type(typeId: ID!): ProductType!
   products(personalizeBy: PersonalizedProductsInput, personalizeForUser: ID, searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ProductsResponse!
-  product(productId: ID!): Product!
+  product(personalizeFor: ID, productId: ID!): Product!
   manufacturers(searchByName: String, order: String, orderBy: String, perPage: Int, offset: Int): ManufacturersResponse!
   manufacturer(manufacturerId: ID!): Manufacturer!
   ranks(order: String, orderBy: String, perPage: Int, offset: Int): RanksResponse!
