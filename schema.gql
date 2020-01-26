@@ -121,12 +121,12 @@ type Mutation {
 }
 
 input PersonalizedProductsInput {
-  aroma: Int = 1
-  taste: Int = 1
-  bitterness: Int = 1
-  energy: Int = 1
-  price: Int = 1
-  overall: Int = 1
+  aroma: Int = 0
+  taste: Int = 0
+  bitterness: Int = 0
+  energy: Int = 0
+  price: Int = 0
+  overall: Int = 0
 }
 
 type Product {

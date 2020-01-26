@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, Any } from 'typeorm';
 import { Product } from './product.entity';
 import { AddProductInput } from './add.product.input';
 import { EditProductInput } from './edit.product.input';
@@ -17,7 +17,7 @@ import { OrderEnum } from '../common/enum';
 import { User } from '../users/user.entity';
 import { UserRoles } from '../auth/guards/roles/user.roles';
 import { PersonalizedProductsInput } from './personalized.products.input';
-
+import { some } from 'lodash';
 @Injectable()
 export class ProductsService {
   constructor(
@@ -53,8 +53,8 @@ export class ProductsService {
         relations: ['profile'],
       });
     }
-
-    if (!user && !personalizedInput.aroma) {
+    const canPersonalize = some(personalizedInput, pref => pref && pref !== 0);
+    if (!user && !canPersonalize) {
       query = query.skip(offset).take(limit);
     }
 
@@ -66,9 +66,9 @@ export class ProductsService {
 
     const [items, total] = await query.getManyAndCount();
 
-    if (user || personalizedInput.aroma) {
+    if (user || canPersonalize) {
       let sortedItems: Product[] = [];
-      if (user && !personalizedInput.aroma) {
+      if (user && !canPersonalize) {
         sortedItems = this.personalizeProducts(
           items,
           user.profile.aromaImportance,
@@ -78,7 +78,7 @@ export class ProductsService {
           user.profile.priceImportance,
           user.profile.overallImportance,
         );
-      } else if (personalizedInput.aroma) {
+      } else if (canPersonalize) {
         sortedItems = this.personalizeProducts(
           items,
           personalizedInput.aroma,
@@ -194,12 +194,13 @@ export class ProductsService {
     overall: number,
   ) {
     return (
-      aroma * product.aromaAverage +
-      bitterness * product.bitternessAverage +
-      taste * product.tasteAverage +
-      energy * product.energyAverage +
-      price * product.priceAverage +
-      overall * product.overallAverage
+      (aroma * product.aromaAverage +
+        bitterness * product.bitternessAverage +
+        taste * product.tasteAverage +
+        energy * product.energyAverage +
+        price * product.priceAverage +
+        overall * product.overallAverage) /
+      (aroma + bitterness + taste + energy + price + overall)
     );
   }
 
