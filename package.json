@@ -29,7 +29,7 @@
     "@nestjs/swagger": "^3.1.0",
     "@nestjs/typeorm": "^6.2.0",
     "apollo-cache-control": "^0.8.11",
-    "apollo-server-express": "^2.9.7",
+    "apollo-server-express": "^2.14.2",
     "argon2": "^0.25.1",
     "aws-sdk": "^2.596.0",
     "class-transformer": "^0.2.3",
